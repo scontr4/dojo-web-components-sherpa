@@ -1,0 +1,335 @@
+version: 2.1
+
+references:
+  working-directory: &working-directory
+    ~/bbog-dig-angular-template-web-ui
+
+  working-directory-attachment: &working-directory-attachment
+    attach_workspace:
+      at: *working-directory
+
+  npm-cache-path: &npm-cache-path
+    node_modules
+  
+  docker-image-caching: &docker-image-caching
+    setup_remote_docker: 
+      docker_layer_caching: true
+
+  docker-config: &docker-config
+    working_directory: *working-directory
+    docker:
+      - image: circleci/node:11-browsers-legacy
+
+  machine-config: &machine-config
+    working_directory: *working-directory
+    machine:
+      enabled: true
+      docker_layer_caching: true
+
+  project-full-cache-key: &project-full-cache-key
+    npm-bbog-dig-angular-template-web-ui-{{ checksum "package.json" }}-{{ .Branch }}-full-cache-v1.0
+
+  project-cache-key: &project-cache-key
+    npm-bbog-dig-angular-template-web-ui-{{ checksum "package.json" }}-{{ .Branch }}-v1.0
+
+  project-full-cache-restoring: &project-full-cache-restoring
+    restore_cache:
+      keys:
+        - *project-full-cache-key
+
+  project-full-cache-saving: &project-full-cache-saving
+    save_cache:
+      key: *project-full-cache-key
+      paths:
+        - *npm-cache-path
+
+  project-cache-restoring: &project-cache-restoring
+    restore_cache:
+      keys:
+        - *project-cache-key
+
+  project-cache-saving: &project-cache-saving
+    save_cache:
+      key: *project-cache-key
+      paths:
+        - *npm-cache-path
+
+  git-bdb-lambdas-pipeline-clonning: &git-bdb-lambdas-pipeline-clonning
+    run:
+      name: git-bbog-bdb-lambdas-pipeline-clonning
+      command: |
+        git clone git@github.com:bancodebogota/bbog-bdb-lambdas-pipeline.git
+        cd bbog-bdb-lambdas-pipeline
+        git checkout v1.0.2
+        cd ..
+
+  git-bdb-terraform-templates-clonning: &git-bdb-terraform-templates-clonning
+    run:
+      name: git-terraform-templates-clonning
+      command: |
+        git clone git@github.com:bancodebogota/terraform-templates.git
+        cd terraform-templates
+        git checkout v1.4
+        cd ..
+
+orbs:
+  sonar-cloud: bancodebogota/npm-sonar-cloud@0.0.4
+
+jobs:
+  building:
+    <<: *docker-config
+    steps:
+      - checkout
+      - *docker-image-caching
+      - *project-full-cache-restoring
+      - run:
+          name: dependencies-downloading
+          command: npm i
+      - run:
+          name: building
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              npm run build:qa
+            elif [ "${CIRCLE_BRANCH}" == "stage" ]; then
+              npm run build:st
+            elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+              npm run build:prod
+            fi
+      - *project-full-cache-saving
+      - run:
+          name: removing-node-modules
+          command: rm -rf node_modules
+      - *project-cache-restoring
+      - run:
+          name: dependencies-downloading
+          command: npm i --only=prod
+      - *project-cache-saving
+      - persist_to_workspace:
+          root: .
+          paths: dist
+
+  quality:
+    <<: *machine-config
+    steps:
+      - checkout
+      - run:
+          name: renaming-file
+          command: mv .env.circle .env
+      - *project-cache-restoring
+      - run:
+          name: linter-execution
+          command: npm run lint
+      - sonar-cloud/check-code-quality:
+          cache-key: *project-full-cache-key
+
+# develop configuration
+develop-web-page-provisioning:
+  <<: *terraform-config
+  steps:
+    - checkout
+    - *docker-image-caching
+    - run:
+        name: infraestructure-provisioning
+        command: |
+          if [[ `git log -1` =~ "npm-releasing" ]]; then
+            echo "provisioning ignored"
+          else
+            export AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID_DEVELOP
+            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_DEVELOP
+            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_DEVELOP
+            cd pipeline/web-pages
+            terraform init \
+              -input=false \
+              -backend-config="bucket=develop-bdb-do-terraform-states" \
+              -backend-config="key=do/web-pages/bbog-dig-angular-template-web-ui.tfstate" \
+              -backend-config="region=us-east-1" \
+              -backend-config="encrypt=true" || exit 1
+            terraform plan -input=false -out=tfplan || exit 1
+            terraform apply -input=false -auto-approve tfplan || exit 1
+          fi
+
+develop-web-page-deployment:
+  <<: *machine-config
+  steps:
+    - checkout
+    - *git-bbog-bdb-aws-web-pages-terraform
+    - *git-bdb-terraform-templates-clonning
+    - *working-directory-attachment
+    - run:
+        name: infraestructure-provisioning
+        command: |
+          if [[ `git log -1` =~ "npm-releasing" ]]; then
+            echo "deployment ignored"
+          else
+            bash bbog-bdb-aws-web-pages-terraform/deploy.sh \
+              --app-name=bbog-dig-angular-template-web-ui \
+              --environment=develop \
+              --team=do \
+              --version=$(node -p -e "require('./package.json').version")-commit-$CIRCLE_SHA1 \
+              --aws-account-id=$AWS_ACCOUNT_ID_DEVELOP \
+              --aws-access-key-id=$AWS_ACCESS_KEY_ID_DEVELOP \
+              --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY_DEVELOP \
+              --aws-region=us-east-1 \
+              --app-bucket=develop-bdb-do-web-pages \
+              --target-folder-to-upload=dist/bbog-dig-angular-template-web-ui
+          fi
+    - run:
+        name: versioning
+        command: |
+          cd ~/bbog-dig-angular-template-web-ui
+          bash terraform-templates/versioning/node/upgrade.sh
+
+# stage configuration
+stage-web-page-provisioning:
+  <<: *terraform-config
+  steps:
+    - checkout
+    - *docker-image-caching
+    - run:
+        name: infraestructure-provisioning
+        command: |
+          if [[ `git log -1` =~ "npm-releasing" ]]; then
+            echo "provisioning ignored"
+          else
+            export AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID_STAGE
+            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_STAGE
+            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_STAGE
+            cd pipeline/web-pages
+            terraform init \
+              -input=false \
+              -backend-config="bucket=stage-bdb-do-terraform-states" \
+              -backend-config="key=do/web-pages/bbog-dig-angular-template-web-ui.tfstate" \
+              -backend-config="region=us-east-1" \
+              -backend-config="encrypt=true" || exit 1
+            terraform plan -var-file=stage.tfvars -input=false -out=tfplan || exit 1
+            terraform apply -input=false -auto-approve tfplan || exit 1
+          fi
+
+stage-web-page-deployment:
+  <<: *machine-config
+  steps:
+    - checkout
+    - *git-bbog-bdb-aws-web-pages-terraform
+    - *git-bdb-terraform-templates-clonning
+    - *working-directory-attachment
+    - run:
+        name: infraestructure-provisioning
+        command: |
+          if [[ `git log -1` =~ "npm-releasing" ]]; then
+            echo "deployment ignored"
+          else
+            bash bbog-bdb-aws-web-pages-terraform/deploy.sh \
+              --app-name=bbog-dig-angular-template-web-ui \
+              --environment=stage \
+              --team=do \
+              --version=$(node -p -e "require('./package.json').version")-commit-$CIRCLE_SHA1 \
+              --aws-account-id=$AWS_ACCOUNT_ID_STAGE \
+              --aws-access-key-id=$AWS_ACCESS_KEY_ID_STAGE \
+              --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY_STAGE \
+              --aws-region=us-east-1 \
+              --app-bucket=stage-bdb-do-web-pages \
+              --target-folder-to-upload=dist/bbog-dig-angular-template-web-ui
+          fi
+    - run:
+        name: versioning
+        command: |
+          cd ~/bbog-dig-angular-template-web-ui
+          bash terraform-templates/versioning/node/upgrade.sh
+
+# production configuration
+production-web-page-provisioning:
+  <<: *terraform-config
+  steps:
+    - checkout
+    - *docker-image-caching
+    - run:
+        name: infraestructure-provisioning
+        command: |
+          if [[ `git log -1` =~ "npm-releasing" ]]; then
+            echo "provisioning ignored"
+          else
+            export AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID_PRODUCTION
+            export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PRODUCTION
+            export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PRODUCTION
+            cd pipeline/web-pages
+            terraform init \
+              -input=false \
+              -backend-config="bucket=prod-bdb-do-terraform-states" \
+              -backend-config="key=do/web-pages/campanacrediservice.tfstate" \
+              -backend-config="region=us-east-1" \
+              -backend-config="encrypt=true" || exit 1
+            terraform plan -var-file=production.tfvars -input=false -out=tfplan || exit 1
+            terraform apply -input=false -auto-approve tfplan || exit 1
+          fi
+
+production-web-page-deployment:
+  <<: *machine-config
+  steps:
+    - checkout
+    - *git-bbog-bdb-aws-web-pages-terraform
+    - *git-bdb-terraform-templates-clonning
+    - *working-directory-attachment
+    - run:
+        name: infraestructure-provisioning
+        command: |
+          if [[ `git log -1` =~ "npm-releasing" ]]; then
+            echo "deployment ignored"
+          else
+            bash bbog-bdb-aws-web-pages-terraform/deploy.sh \
+              --app-name=campanacrediservice \
+              --environment=prod \
+              --team=do \
+              --version=$(node -p -e "require('./package.json').version")-commit-$CIRCLE_SHA1 \
+              --aws-account-id=$AWS_ACCOUNT_ID_PRODUCTION \
+              --aws-access-key-id=$AWS_ACCESS_KEY_ID_PRODUCTION \
+              --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY_PRODUCTION \
+              --aws-region=us-east-1 \
+              --app-bucket=prod-bdb-do-web-pages \
+              --target-folder-to-upload=dist/bbog-dig-angular-template-web-ui
+          fi
+    - run:
+        name: versioning
+        command: |
+          cd ~/bbog-dig-angular-template-web-ui
+          bash terraform-templates/versioning/node/upgrade.sh
+
+workflows:
+  version: 2
+  building-and-deployment:
+    jobs:
+      - building:
+          context: jfrog-reader
+      - quality:
+          context: sonar-jfrog-reader
+          requires:
+            - building
+
+# develop workflow
+      - develop-lambda-provisioning:
+          context: product-context
+          requires:
+            - quality
+          filters:
+            branches:
+              only:
+                - develop
+
+# stage workflow
+      - stage-lambda-provisioning:
+          context: product-context
+          requires:
+            - quality
+          filters:
+            branches:
+              only:
+                - stage
+
+# production workflow
+      - production-lambda-provisioning:
+          context: product-context
+          requires:
+            - quality
+          filters:
+            branches:
+              only:
+                - master
