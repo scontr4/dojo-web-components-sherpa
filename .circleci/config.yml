@@ -255,7 +255,7 @@ production-web-page-provisioning:
             terraform init \
               -input=false \
               -backend-config="bucket=prod-bdb-do-terraform-states" \
-              -backend-config="key=do/web-pages/campanacrediservice.tfstate" \
+              -backend-config="key=do/web-pages/angular-template.tfstate" \
               -backend-config="region=us-east-1" \
               -backend-config="encrypt=true" || exit 1
             terraform plan -var-file=production.tfvars -input=false -out=tfplan || exit 1
@@ -276,7 +276,7 @@ production-web-page-deployment:
             echo "deployment ignored"
           else
             bash bbog-bdb-aws-web-pages-terraform/deploy.sh \
-              --app-name=campanacrediservice \
+              --app-name=angular-template \
               --environment=prod \
               --team=do \
               --version=$(node -p -e "require('./package.json').version")-commit-$CIRCLE_SHA1 \
