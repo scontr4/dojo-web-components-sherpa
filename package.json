@@ -9,7 +9,7 @@
         "build:qa": "ng build --configuration=qa --aot",
         "build:st": "ng build --configuration=stage --aot",
         "build:prod": "ng build --configuration=production --prod",
-        "test": "ng test",
+        "test": "ng test --browsers ChromeHeadless",
         "lint": "ng lint",
         "e2e": "ng e2e",
         "sonar": "gulp sonar"
