@@ -32,20 +32,24 @@ yarn lint
 
 Yes, I use `yarn` instead of `npm`. YES, I'm a nerd.
 
-## The _"config.yml"_ file
+## The _".yml"_ files
 
-Before you start making commits and make CircleCI fail because of CI configurations, make sure your team DevOps or most experienced developer validates the contents in the `config.yml` file. 
+This project deploys using Github CI A.K.A Github Actions. This means everything you know about CircleCI up until now is gone. Boom. Ciao. Hasta la vista. You serve to a new god.
 
-Please. PLEASE. Do not start building CircleCI jobs until you have a `config.yml` file configured for your team's AWS environment.
+Before you start making commits and make Github Actions workflows fail because of CI configurations, make sure your team DevOps or most experienced developer validates the contents in the `.github/workflows/*.yml` files. 
+
+Please. PLEASE. Do not start building jobs until you have `.yml` files configured for your team's AWS environment.
 
 ## Badges
 
 Also if you want to brag about how well your Github Actions workflows passed, check this out.
 
-![Build](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Build/badge.svg)
-
-![Test](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Test/badge.svg)
+| Environment | Branch | Badge |
+| :--- | :---: | ---: |
+| Production | `master` | ![Production Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Production%20Deployment/badge.svg?branch=master) |
+| Stage | `stage` | ![Stage Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Stage%20Deployment/badge.svg?branch=stage) |
+| QA | `qa` | ![QA Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/QA%20Deployment/badge.svg?branch=qa) |
 
 ## Help
 
-If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else, go tell him ->[👨🏻‍💻](https://github.com/mnieto2)
+If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else or you just wanna chat, go talk to him ->[👨🏻‍💻](https://github.com/mnieto2)
