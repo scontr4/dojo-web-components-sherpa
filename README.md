@@ -42,9 +42,11 @@ Please. PLEASE. Do not start building CircleCI jobs until you have a `config.yml
 
 Also if you want to brag about how well your Github Actions workflows passed, check this out.
 
-![Build](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Build/badge.svg)
-
-![Test](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Test/badge.svg)
+| Environment | Branch | Badge |
+| --- | --- | --- |
+| Production | `master` | ![Production Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Production%20Deployment/badge.svg?branch=master) |
+| Stage | `stage` | ![Stage Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Stage%20Deployment/badge.svg?branch=stage) |
+| QA | `qa` | ![QA Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/QA%20Deployment/badge.svg?branch=qa) |
 
 ## Help
 
