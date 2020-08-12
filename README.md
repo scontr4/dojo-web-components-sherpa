@@ -16,21 +16,19 @@ As of the `package.json`, you have pretty much all the common `scripts` such as:
 
 ```bash
 # Install dependencies
-yarn
+npm i
 
 # Run locally
-yarn start
+npm run start
 # or
-yarn dev 4201
+npm run dev 4201
 
 # Run tests
-yarn test
+npm run test
 
 # Run linter
-yarn lint
+npm run lint
 ```
-
-Yes, I use `yarn` instead of `npm`. YES, I'm a nerd.
 
 ## The _".yml"_ files
 

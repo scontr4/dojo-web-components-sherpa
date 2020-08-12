@@ -19,13 +19,28 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn
-    - run: yarn build
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: yarn
-    - run: yarn run build:qa
-    - run: echo "Deploy to QA"
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build:qa
+    - uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --delete
+      env:
+        AWS_S3_BUCKET: mn-demo-github-actions
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        SOURCE_DIR: 'dist/bbog-dig-angular-template-web-ui'

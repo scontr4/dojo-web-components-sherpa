@@ -19,13 +19,21 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn
-    - run: yarn build
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: yarn
-    - run: yarn run build:prod
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build:prod
     - run: echo "Deploy to Production"

@@ -1,6 +1,29 @@
 {
     "name": "bbog-dig-angular-template-web-ui",
     "version": "0.0.1",
+    "description": "Template example for generating frontend repos for bdb. Courtesy of @mnieto2",
+    "keywords": [
+        "github",
+        "actions",
+        "angular",
+        "husky",
+        "bbog",
+        "template"
+    ],
+    "bugs": {
+        "email": "mnieto2@bancodebogota.com.co",
+        "url": "https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/issues"
+    },
+    "author": {
+        "email": "mnieto2@bancodebogota.com.co",
+        "name": "Mateo Nieto",
+        "url": "https://github.com/mnieto2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bancodebogota/bbog-dig-angular-template-web-ui.git"
+    },
+    "license": "MIT",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -18,8 +41,8 @@
         "//1": "Use git commit --no-verify to bypass the pre-commit hook",
         "//2": "Use git push --no-verify to bypass the pre-push hook",
         "hooks": {
-            "pre-commit": "yarn run lint",
-            "pre-push": "yarn run test"
+            "pre-commit": "npm run lint",
+            "pre-push": "npm run test"
         }
     },
     "private": true,
