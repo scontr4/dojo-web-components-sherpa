@@ -19,15 +19,15 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn
-    - run: yarn build
+    - run: npm i
+    - run: npm run build
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: yarn
-    - run: yarn run build:qa
+    - run: npm
+    - run: npm run build:qa
     - uses: jakejarvis/s3-sync-action@master
       with:
         args: --delete
