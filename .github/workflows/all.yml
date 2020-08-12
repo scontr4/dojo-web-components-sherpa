@@ -22,6 +22,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm i
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
     - run: npm run build
     - run: npm run test
