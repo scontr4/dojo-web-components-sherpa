@@ -19,13 +19,40 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn
-    - run: yarn build
-  deploy:
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build
+  sonarcloud:
+    runs-on: ubuntu-latest
     needs: build
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm test
+    - run: npm run coverage
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@v1.3
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_CLOUD_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    needs: sonarcloud
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: yarn
-    - run: yarn run build:prod
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build:prod
     - run: echo "Deploy to Production"
