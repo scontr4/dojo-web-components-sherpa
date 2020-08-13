@@ -29,3 +29,22 @@ jobs:
         ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
     - run: npm run build
     - run: npm run test
+  sonarcloud:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm test
+    - run: npm run coverage
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@v1.3
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_CLOUD_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

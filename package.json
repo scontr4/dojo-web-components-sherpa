@@ -33,6 +33,7 @@
         "build:st": "ng build --configuration=stage --aot",
         "build:prod": "ng build --configuration=production --prod",
         "test": "ng test --browsers ChromeHeadless",
+        "coverage": "ng test --browsers ChromeHeadless --codeCoverage=true",
         "lint": "ng lint",
         "e2e": "ng e2e",
         "sonar": "gulp sonar"
