@@ -28,23 +28,60 @@ jobs:
         ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
         ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
     - run: npm run build
-    - run: npm run test
-  sonarcloud:
+  test:
     runs-on: ubuntu-latest
-    needs: build
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
     steps:
     - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
       with:
-        fetch-depth: 0
+        node-version: ${{ matrix.node-version }}
     - name: Install dependencies
       run: sh ci-cd/install-dependencies.sh
       env:
         ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
         ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
-    - run: npm test
-    - run: npm run coverage
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@v1.3
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_CLOUD_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: npm run test
+  sonar:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Get coverage file
+      uses: actions/download-artifact@v1
+      with:
+        name: coverage
+   
+    - name: Checkout bancodebogota/bbog-dig-sonarcloud-pipeline
+      uses: actions/checkout@v2
+      with:
+        repository: bancodebogota/bbog-dig-sonarcloud-pipeline
+        ref: 0.0.18
+        token: ${{secrets.CA_GITHUB_ACCESS_TOKEN}}
+        persist-credentials: false
+        path: ./.github/actions/bbog-dig-sonarcloud-pipeline
+ 
+    - name: set-long-branch-name
+      run: |
+        BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)
+        CURRENT_BRANCH="$BRANCH_NAME"
+        if [ "$CURRENT_BRANCH" != "master" ] && [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "qa" ]
+        then
+          CURRENT_BRANCH="qa"
+        fi
+        echo "Sonar Branch report => " ${CURRENT_BRANCH}
+        echo "CURRENT_BRANCH='${CURRENT_BRANCH}'" >> $GITHUB_ENV
+    - name: Report to sonar
+      uses: ./.github/actions/bbog-dig-sonarcloud-pipeline
+      with:
+        access-token: ${{ secrets.SONAR_CLOUD_TOKEN }}
+        project-name: 'bbog-dig-angular-template-web-ui'
+        project-key: 'bbog-dig-angular-template-web-ui'
+        organization: ${{ secrets.SONAR_CLOUD_ORG }}
+        current-branch: ${{env.CURRENT_BRANCH}}
+        language: 'javascript'
+        debug: 'true'
