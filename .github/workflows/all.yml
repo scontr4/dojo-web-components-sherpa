@@ -79,8 +79,8 @@ jobs:
       uses: ./.github/actions/bbog-dig-sonarcloud-pipeline
       with:
         access-token: ${{ secrets.SONAR_CLOUD_TOKEN }}
-        project-name: 'bbog-dig-angular-template-web-ui'
-        project-key: 'bbog-dig-angular-template-web-ui'
+        project-name: ${{ github.event.repository.name }}
+        project-key: ${{ github.event.repository.name }}
         organization: ${{ secrets.SONAR_CLOUD_ORG }}
         current-branch: ${{env.CURRENT_BRANCH}}
         language: 'javascript'
