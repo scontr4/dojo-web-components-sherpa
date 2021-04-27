@@ -61,7 +61,7 @@ jobs:
       with:
         repository: bancodebogota/bbog-dig-sonarcloud-pipeline
         ref: 0.0.18
-        token: ${{secrets.CA_GITHUB_ACCESS_TOKEN}}
+        token: ${{secrets.DIG_READER_GITHUB_ACCESS_TOKEN}}
         persist-credentials: false
         path: ./.github/actions/bbog-dig-sonarcloud-pipeline
  
