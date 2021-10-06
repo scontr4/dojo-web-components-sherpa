@@ -50,7 +50,14 @@ jobs:
     needs: test
     steps:
     - uses: actions/checkout@v2
-
+    - name: Restore cache
+      uses: actions/cache@v2
+      id: cache-app
+      env:
+        cache-name: angular-source
+      with:
+        path: src
+        key: ${{ env.cache-name }}-${{ hashFiles('**/src/**','**/*.properties') }}-cache
     - name: Get coverage file
       uses: actions/download-artifact@v1
       with:
@@ -85,3 +92,4 @@ jobs:
         current-branch: ${{env.CURRENT_BRANCH}}
         language: 'javascript'
         debug: 'true'
+      if: steps.cache-app.outputs.cache-hit != 'true'
