@@ -1,0 +1,223 @@
+name: ci-cd
+
+on:
+  push:
+    branches: [qa, staging, master, feature/*]
+env:
+  language: "javascript"
+  project_name: "angular-template-web-ui"
+  ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+  ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+
+jobs:
+  install-dev-dependencies:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Restore or save cache for dev Dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: npm-node-modules-dev
+        with:
+          path: node_modules
+          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
+      - name: Install Dependencies
+        run: |
+          if [ -d "node_modules" ]; then
+            echo 'Dependencies already exists!'
+          else
+            npm ci
+          fi
+  build:
+    runs-on: ubuntu-20.04
+    needs: install-dev-dependencies
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Restore or save cache for dev Dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: npm-node-modules-dev
+        with:
+          path: node_modules
+          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
+      - name: Install Dependencies
+        run: |
+          npm run build
+      - name: Persist Data
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build
+
+  install-prod-dependencies:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Restore or save cache for prod Dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: npm-node-modules-prod
+        with:
+          path: node_modules
+          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-prod
+      - run: ls
+      - name: Install Dependencies
+        run: |
+          if [ -d "node_modules" ]; then
+            echo 'Dependencies already exists!'
+          else
+            npm ci --only=prod
+          fi
+  test:
+    runs-on: ubuntu-20.04
+    needs: install-dev-dependencies
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Restore or save cache for dev Dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: npm-node-modules-dev
+        with:
+          path: node_modules
+          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
+      - name: Running Linter
+        run: npm run lint
+      - name: Running Test
+        run: |
+          npm run test && npm run coverage
+      - name: Persist Data
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage
+  sonar:
+    runs-on: ubuntu-20.04
+    needs: [build, test]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore Data
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage
+          path: coverage
+      - name: Checkout bancodebogota/bbog-dig-sonarcloud-pipeline
+        uses: actions/checkout@v2
+        with:
+          repository: bancodebogota/bbog-dig-sonarcloud-pipeline
+          ref: 0.1.0
+          token: ${{secrets.DIG_READER_GITHUB_ACCESS_TOKEN}}
+          persist-credentials: false
+          path: ./.github/actions/bbog-dig-sonarcloud-pipeline
+      - name: Current Branch
+        shell: bash
+        id: long-lived-branch
+        run: |
+          CURRENT_BRANCH=$(echo ${GITHUB_REF#refs/heads/})
+          if [ "$CURRENT_BRANCH" != "master" ] && [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "qa" ]
+          then
+            CURRENT_BRANCH="qa"
+          fi
+          echo "##[set-output name=branch;]$(echo ${CURRENT_BRANCH})"
+          echo "Sonar Branch report => " ${CURRENT_BRANCH}
+      - name: SonarCloud Scanner
+        uses: ./.github/actions/bbog-dig-sonarcloud-pipeline
+        with:
+          language: ${{ env.language }}
+          current-branch: ${{ steps.long-lived-branch.outputs.branch }}
+          access-token: ${{ secrets.SONAR_CLOUD_TOKEN }}
+          project-name: ${{ github.event.repository.name }}
+          project-key: ${{ github.event.repository.name }}
+          #sonar-project-properties-file: "sonar-project-custom.properties"
+  qa-deploy-virginia:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/qa'
+    environment: qa
+    needs: [install-prod-dependencies, sonar]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build:qa
+    - uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --delete
+      env:
+        AWS_S3_BUCKET: mn-demo-github-actions
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        SOURCE_DIR: 'dist/bbog-dig-angular-template-web-ui'            
+  
+  staging-deploy-virginia:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/staging'
+    environment: st
+    needs: [install-prod-dependencies, sonar]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build:st
+    - uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --delete
+      env:
+        AWS_S3_BUCKET: mn-demo-github-actions
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        SOURCE_DIR: 'dist/bbog-dig-angular-template-web-ui'  
+
+  prod-deploy-virginia:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/master'
+    environment: pr
+    needs: [install-prod-dependencies, sonar]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: sh ci-cd/install-dependencies.sh
+      env:
+        ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+        ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
+    - run: npm run build:prod
+    - uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --delete
+      env:
+        AWS_S3_BUCKET: mn-demo-github-actions
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        SOURCE_DIR: 'dist/bbog-dig-angular-template-web-ui'  
