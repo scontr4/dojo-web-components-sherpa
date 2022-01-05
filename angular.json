@@ -104,6 +104,14 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
@@ -116,8 +124,12 @@
           "configurations": {
             "production": {
               "browserTarget": "bbog-dig-angular-template-web-ui:build:production"
+            },
+            "development": {
+              "browserTarget": "bbog-dig-angular-template-web-ui:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
