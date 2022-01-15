@@ -1,5 +1,6 @@
 # BdB Angular Template
 
+
 This directory is a brief example of an [Angular](https://angular.io/) app that can be used for the companie's products.
 
 ## Build It For Your Own Team
@@ -50,4 +51,4 @@ Also if you want to brag about how well your Github Actions workflows passed, ch
 
 ## Help
 
-If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else or you just wanna chat, go talk to him ->[👨🏻‍💻](https://github.com/mnieto2)
+If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else or you just wanna chat, go talk to him ->[👨🏻‍💻](https://github.com/aacos13)
