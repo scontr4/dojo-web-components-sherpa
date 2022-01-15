@@ -12,7 +12,7 @@ env:
   aws-region: "us-east-1"
   build-folder: "build"
   bucket: "angular-template-web-ui"
-  distribution: "E4QFXQ2K97T4S"
+  distribution: "a1b2c3"
 
 jobs:
   install-dev-dependencies:
@@ -151,45 +151,45 @@ jobs:
           project-name: ${{ github.event.repository.name }}
           project-key: ${{ github.event.repository.name }}
           sonar-project-properties-file: 'sonar-project-custom.properties'
-  qa-deploy-virginia:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/qa'
-    environment: qa
-    needs: sonar
-    steps:
-      - uses: actions/checkout@v2
-      - name: Checking LabActions
-        uses: actions/checkout@v2
-        with:
-          repository: bancodebogota/bdb-dig-do-pipelines-action-s3
-          ref: ""
-          token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
-          persist-credentials: false
-          path: ./.github/actions/bdb-dig-do-pipelines-action-s3
-      - name: Restore cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.cache-path }}
-          key: ${{ env.cache-key }}-${{ hashFiles('**/package.json') }}
-          restore-keys: ${{ env.cache-key }}
-      - name: Restore Data
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-          path: ${{ env.build-folder }}
-      - name: Deploy
-        uses: ./.github/actions/bdb-dig-do-pipelines-action-s3/S3
-        with:
-          aws-account-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.aws-region }}
-          app-name: ${{ env.app-name }}
-          enable-custom-app-name: false
-          version: $GITHUB_SHA
-          build-folder: ${{ env.build-folder }}
-          bucket: ${{ env.bucket }}
-          distribution-id: ${{ env.distribution }}      
+  # qa-deploy-virginia:
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/qa'
+  #   environment: qa
+  #   needs: sonar
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Checking LabActions
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: bancodebogota/bdb-dig-do-pipelines-action-s3
+  #         ref: ""
+  #         token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+  #         persist-credentials: false
+  #         path: ./.github/actions/bdb-dig-do-pipelines-action-s3
+  #     - name: Restore cache
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ${{ env.cache-path }}
+  #         key: ${{ env.cache-key }}-${{ hashFiles('**/package.json') }}
+  #         restore-keys: ${{ env.cache-key }}
+  #     - name: Restore Data
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: build
+  #         path: ${{ env.build-folder }}
+  #     - name: Deploy
+  #       uses: ./.github/actions/bdb-dig-do-pipelines-action-s3/S3
+  #       with:
+  #         aws-account-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ${{ env.aws-region }}
+  #         app-name: ${{ env.app-name }}
+  #         enable-custom-app-name: false
+  #         version: $GITHUB_SHA
+  #         build-folder: ${{ env.build-folder }}
+  #         bucket: ${{ env.bucket }}
+  #         distribution-id: ${{ env.distribution }}      
     
   # staging-deploy-virginia:
   #   runs-on: ubuntu-20.04
