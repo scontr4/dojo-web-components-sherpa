@@ -23,6 +23,7 @@ describe('TestComponent', () => {
   });
 
   it('should validate text', () => {
+    expect(typeof (component.title)).toBe('string')
     expect(component.title).toEqual('template');
   });
 });
