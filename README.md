@@ -1,12 +1,13 @@
 # BdB Angular Template
 
+
 This directory is a brief example of an [Angular](https://angular.io/) app that can be used for the companie's products.
 
 ## Build It For Your Own Team
 
 Right after your new repository has been created based on this template, you need to include the project name inside it.
 
-For that, go ahead and **Find and Replace** _"bbog-dig-angular-template-web-ui"_ with whatever is your new project repo name. Something like _"bbog-something-web-ui"_.
+For that, go ahead and **Find and Replace** _"bbog-dig-dt-ci-cd-cycle-web-ui"_ with whatever is your new project repo name. Something like _"bbog-something-web-ui"_.
 
 Up until this point, you're ready to start working on your development.
 
@@ -44,10 +45,10 @@ Also if you want to brag about how well your Github Actions workflows passed, ch
 
 | Environment | Branch | Badge |
 | :--- | :---: | ---: |
-| Production | `master` | ![Production Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Production%20Deployment/badge.svg?branch=master) |
-| Stage | `stage` | ![Stage Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Stage%20Deployment/badge.svg?branch=stage) |
-| QA | `qa` | ![QA Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/QA%20Deployment/badge.svg?branch=qa) |
+| Production | `master` | ![Production Deployment](https://github.com/bancodebogota/bbog-dig-dt-ci-cd-cycle-web-ui/workflows/Production%20Deployment/badge.svg?branch=master) |
+| Stage | `stage` | ![Stage Deployment](https://github.com/bancodebogota/bbog-dig-dt-ci-cd-cycle-web-ui/workflows/Stage%20Deployment/badge.svg?branch=stage) |
+| QA | `qa` | ![QA Deployment](https://github.com/bancodebogota/bbog-dig-dt-ci-cd-cycle-web-ui/workflows/QA%20Deployment/badge.svg?branch=qa) |
 
 ## Help
 
-If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else or you just wanna chat, go talk to him ->[👨🏻‍💻](https://github.com/mnieto2)
+If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else or you just wanna chat, go talk to him ->[👨🏻‍💻](https://github.com/aacos13)
