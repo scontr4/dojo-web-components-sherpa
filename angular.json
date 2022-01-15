@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bbog-dig-dt-ci-cd-cycle-web-ui": {
+    "bbog-dig-angular-template-web-ui": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/bbog-dig-dt-ci-cd-cycle-web-ui",
+            "outputPath": "dist/bbog-dig-angular-template-web-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -119,14 +119,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "bbog-dig-dt-ci-cd-cycle-web-ui:build"
+            "browserTarget": "bbog-dig-angular-template-web-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "bbog-dig-dt-ci-cd-cycle-web-ui:build:production"
+              "browserTarget": "bbog-dig-angular-template-web-ui:build:production"
             },
             "development": {
-              "browserTarget": "bbog-dig-dt-ci-cd-cycle-web-ui:build:development"
+              "browserTarget": "bbog-dig-angular-template-web-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -134,7 +134,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bbog-dig-dt-ci-cd-cycle-web-ui:build"
+            "browserTarget": "bbog-dig-angular-template-web-ui:build"
           }
         },
         "test": {
@@ -168,7 +168,7 @@
       }
     }
   },
-  "defaultProject": "bbog-dig-dt-ci-cd-cycle-web-ui",
+  "defaultProject": "bbog-dig-angular-template-web-ui",
   "cli": {
     "analytics": "600d3bab-efe6-413a-a7ec-ba1a54289d2b",
     "defaultCollection": "@angular-eslint/schematics"

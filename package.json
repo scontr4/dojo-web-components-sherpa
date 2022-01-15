@@ -1,5 +1,5 @@
 {
-  "name": "bbog-dig-dt-ci-cd-cycle-web-ui",
+  "name": "bbog-dig-angular-template-web-ui",
   "version": "1.0.2",
   "description": "Template example for generating frontend repos for bdb. Courtesy of @mnieto2 and @aacos13",
   "keywords": [
@@ -12,7 +12,7 @@
   ],
   "bugs": {
     "email": "mnieto2@bancodebogota.com.co",
-    "url": "https://github.com/bancodebogota/bbog-dig-dt-ci-cd-cycle-web-ui/issues"
+    "url": "https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/issues"
   },
   "author": {
     "email": "mnieto2@bancodebogota.com.co",
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bancodebogota/bbog-dig-dt-ci-cd-cycle-web-ui.git"
+    "url": "https://github.com/bancodebogota/bbog-dig-angular-template-web-ui.git"
   },
   "license": "MIT",
   "scripts": {
