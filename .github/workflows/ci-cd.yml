@@ -151,8 +151,8 @@ jobs:
           path: ./.github/actions/bbog-dig-sonarcloud-pipeline
       - name: Current Branch
         shell: bash
-        id: long-lived-branch
-          run: echo "Example reporting to Sonar"
+        run: echo "Example reporting to Sonar"
+      #  id: long-lived-branch
       #   run: |
       #     CURRENT_BRANCH=$(echo ${GITHUB_REF#refs/heads/})
       #     if [ "$CURRENT_BRANCH" != "master" ] && [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "qa" ]
