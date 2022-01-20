@@ -10,9 +10,10 @@ env:
   ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
   ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
   aws-region: "us-east-1"
-  build-folder: "build"
-  bucket: "angular-template-web-ui"
-  distribution: "a1b2c3"
+  build-folder: "dist/bbog-dig-angular-template-web-ui"
+  bucket: "lifecycle-frontend-web-ui"
+  distribution: "E4QFXQ2K97T4S"
+  cache-path: node_modules
 
 jobs:
   install-dev-dependencies:
@@ -53,14 +54,31 @@ jobs:
         with:
           path: node_modules
           key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
-      - name: Install Dependencies
+      - name: Create build
         run: |
-          npm run build
+          CURRENT_BRANCH=$(echo ${GITHUB_REF#refs/heads/})
+          echo $CURRENT_BRANCH
+          if [ "$CURRENT_BRANCH" == "master" ]
+          then
+              npm run build:prod
+          fi
+          if [ "$CURRENT_BRANCH" == "staging" ]
+          then
+              npm run build:st
+          fi
+          if [ "$CURRENT_BRANCH" == "qa" ]
+          then
+              npm run build:qa
+          fi
+          if [ "$CURRENT_BRANCH" != "master" ] && [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "qa" ]
+          then
+            npm run build
+          fi
       - name: Persist Data
         uses: actions/upload-artifact@v2
         with:
           name: build
-          path: build
+          path: ${{ env.build-folder }}
 
   install-prod-dependencies:
     runs-on: ubuntu-20.04
@@ -133,104 +151,144 @@ jobs:
           path: ./.github/actions/bbog-dig-sonarcloud-pipeline
       - name: Current Branch
         shell: bash
-        id: long-lived-branch
-        run: |
-          CURRENT_BRANCH=$(echo ${GITHUB_REF#refs/heads/})
-          if [ "$CURRENT_BRANCH" != "master" ] && [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "qa" ]
-          then
-            CURRENT_BRANCH="qa"
-          fi
-          echo "##[set-output name=branch;]$(echo ${CURRENT_BRANCH})"
-          echo "Sonar Branch report => " ${CURRENT_BRANCH}
-      - name: SonarCloud Scanner
-        uses: ./.github/actions/bbog-dig-sonarcloud-pipeline
+        run: echo "Example reporting to Sonar"
+      #  id: long-lived-branch
+      #   run: |
+      #     CURRENT_BRANCH=$(echo ${GITHUB_REF#refs/heads/})
+      #     if [ "$CURRENT_BRANCH" != "master" ] && [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "qa" ]
+      #     then
+      #       CURRENT_BRANCH="qa"
+      #     fi
+      #     echo "##[set-output name=branch;]$(echo ${CURRENT_BRANCH})"
+      #     echo "Sonar Branch report => " ${CURRENT_BRANCH}
+      # - name: SonarCloud Scanner
+      #   uses: ./.github/actions/bbog-dig-sonarcloud-pipeline
+      #   with:
+      #     language: ${{ env.language }}
+      #     current-branch: ${{ steps.long-lived-branch.outputs.branch }}
+      #     access-token: ${{ secrets.SONAR_CLOUD_TOKEN }}
+      #     project-name: ${{ github.event.repository.name }}
+      #     project-key: ${{ github.event.repository.name }}
+      #     sonar-project-properties-file: 'sonar-project-custom.properties'
+  
+  qa-deploy-virginia:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/qa'
+    environment: qa
+    needs: [install-prod-dependencies, sonar]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checking LabActions
+        uses: actions/checkout@v2
         with:
-          language: ${{ env.language }}
-          current-branch: ${{ steps.long-lived-branch.outputs.branch }}
-          access-token: ${{ secrets.SONAR_CLOUD_TOKEN }}
-          project-name: ${{ github.event.repository.name }}
-          project-key: ${{ github.event.repository.name }}
-          sonar-project-properties-file: 'sonar-project-custom.properties'
-  # qa-deploy-virginia:
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/qa'
-  #   environment: qa
-  #   needs: sonar
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Checking LabActions
-  #       uses: actions/checkout@v2
-  #       with:
-  #         repository: bancodebogota/bdb-dig-do-pipelines-action-s3
-  #         ref: ""
-  #         token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
-  #         persist-credentials: false
-  #         path: ./.github/actions/bdb-dig-do-pipelines-action-s3
-  #     - name: Restore cache
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: ${{ env.cache-path }}
-  #         key: ${{ env.cache-key }}-${{ hashFiles('**/package.json') }}
-  #         restore-keys: ${{ env.cache-key }}
-  #     - name: Restore Data
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: build
-  #         path: ${{ env.build-folder }}
-  #     - name: Deploy
-  #       uses: ./.github/actions/bdb-dig-do-pipelines-action-s3/S3
-  #       with:
-  #         aws-account-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ${{ env.aws-region }}
-  #         app-name: ${{ env.app-name }}
-  #         enable-custom-app-name: false
-  #         version: $GITHUB_SHA
-  #         build-folder: ${{ env.build-folder }}
-  #         bucket: ${{ env.bucket }}
-  #         distribution-id: ${{ env.distribution }}      
+          repository: bancodebogota/bdb-dig-do-pipelines-action-s3
+          ref: ''
+          token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+          persist-credentials: false
+          path: ./.github/actions/bdb-dig-do-pipelines-action-s3
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.cache-path }}
+          key: npm-${{ env.project_name }}-${{ hashFiles('**/package.json') }}
+          restore-keys: npm-${{ env.project_name }}
+      - name: Restore Data
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: ${{ env.build-folder }}
+      - name: Deploy
+        uses: ./.github/actions/bdb-dig-do-pipelines-action-s3/S3
+        with:
+          aws-account-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws-region }}
+          app-name: ${{ env.app-name }}
+          enable-custom-app-name: false
+          version: $GITHUB_SHA
+          build-folder: ${{ env.build-folder }}
+          bucket: qa-${{ env.bucket }}
+          distribution-id: ${{ env.distribution }}      
     
-  # staging-deploy-virginia:
-  #   runs-on: ubuntu-20.04
-  #   if: github.ref == 'refs/heads/staging'
-  #   environment: st
-  #   needs: [install-prod-dependencies, sonar]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Install dependencies
-  #       run: sh ci-cd/install-dependencies.sh
-  #       env:
-  #         ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
-  #         ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
-  #     - run: npm run build:st
-  #     - uses: jakejarvis/s3-sync-action@master
-  #       with:
-  #         args: --delete
-  #       env:
-  #         AWS_S3_BUCKET: mn-demo-github-actions
-  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         SOURCE_DIR: 'dist/bbog-dig-angular-template-web-ui'  
+  staging-deploy-virginia:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/staging'
+    environment: st
+    needs: [install-prod-dependencies, sonar]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checking LabActions
+        uses: actions/checkout@v2
+        with:
+          repository: bancodebogota/bdb-dig-do-pipelines-action-s3
+          ref: ''
+          token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+          persist-credentials: false
+          path: ./.github/actions/bdb-dig-do-pipelines-action-s3
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.cache-path }}
+          key: npm-${{ env.project_name }}-${{ hashFiles('**/package.json') }}
+          restore-keys: npm-${{ env.project_name }}
+      - name: Restore Data
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: ${{ env.build-folder }}
+      - name: Deploy
+        uses: ./.github/actions/bdb-dig-do-pipelines-action-s3/S3
+        with:
+          aws-account-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.aws-region }}
+          app-name: ${{ env.app-name }}
+          enable-custom-app-name: false
+          version: $GITHUB_SHA
+          build-folder: ${{ env.build-folder }}
+          bucket: staging-${{ env.bucket }}
+          distribution-id: ${{ env.distribution }}      
 
-  # prod-deploy-virginia:
-  #   runs-on: ubuntu-20.04
-  #   if: github.ref == 'refs/heads/master'
-  #   environment: pr
-  #   needs: [install-prod-dependencies, sonar]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Install dependencies
-  #       run: sh ci-cd/install-dependencies.sh
-  #       env:
-  #         ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
-  #         ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
-  #     - run: npm run build:prod
-  #     - uses: jakejarvis/s3-sync-action@master
-  #       with:
-  #         args: --delete
-  #       env:
-  #         AWS_S3_BUCKET: mn-demo-github-actions
-  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         SOURCE_DIR: 'dist/bbog-dig-angular-template-web-ui'  
+  prod-deploy-virginia:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/master'
+    environment: pr
+    needs: [install-prod-dependencies, sonar]
+    steps:
+      - name: Running Linter
+        run: echo "Example prod-deploy-virginia"
+      # - uses: actions/checkout@v2
+      # - name: Checking LabActions
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: bancodebogota/bdb-dig-do-pipelines-action-s3
+      #     ref: ''
+      #     token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+      #     persist-credentials: false
+      #     path: ./.github/actions/bdb-dig-do-pipelines-action-s3
+      # - name: Restore cache
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ${{ env.cache-path }}
+      #     key: npm-${{ env.project_name }}-${{ hashFiles('**/package.json') }}
+      #     restore-keys: npm-${{ env.project_name }}
+      # - name: Restore Data
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: build
+      #     path: ${{ env.build-folder }}
+      # - name: Deploy
+      #   uses: ./.github/actions/bdb-dig-do-pipelines-action-s3/S3
+      #   with:
+      #     aws-account-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: ${{ env.aws-region }}
+      #     app-name: ${{ env.app-name }}
+      #     enable-custom-app-name: false
+      #     version: $GITHUB_SHA
+      #     build-folder: ${{ env.build-folder }}
+      #     bucket: prod-${{ env.bucket }}
+      #     distribution-id: ${{ env.distribution }}      
