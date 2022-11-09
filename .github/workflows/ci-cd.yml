@@ -19,13 +19,13 @@ jobs:
   install-dev-dependencies:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14.x
       - name: Restore or save cache for dev Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: npm-node-modules-dev
         with:
@@ -42,13 +42,13 @@ jobs:
     runs-on: ubuntu-20.04
     needs: install-dev-dependencies
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14.x
       - name: Restore or save cache for dev Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: npm-node-modules-dev
         with:
@@ -75,7 +75,7 @@ jobs:
             npm run build
           fi
       - name: Persist Data
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build
           path: ${{ env.build-folder }}
@@ -83,13 +83,13 @@ jobs:
   install-prod-dependencies:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14.x
       - name: Restore or save cache for prod Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: npm-node-modules-prod
         with:
@@ -107,13 +107,13 @@ jobs:
     runs-on: ubuntu-20.04
     needs: install-dev-dependencies
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14.x
       - name: Restore or save cache for dev Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: npm-node-modules-dev
         with:
@@ -122,10 +122,10 @@ jobs:
       - name: Running Linter
         run: npm run lint
       - name: Running Test
-        run: | 
+        run: |
           npm run test && npm run coverage && ls && cat coverage/lcov.info
       - name: Persist Data
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage
           path: coverage
@@ -133,16 +133,16 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [build, test]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Restore Data
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: coverage
           path: coverage
       - name: list coverage
         run:  ls coverage && cat coverage/lcov.info
       - name: Checkout bancodebogota/bbog-dig-sonarcloud-pipeline
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: bancodebogota/bbog-dig-sonarcloud-pipeline
           ref: 0.1.0
@@ -170,16 +170,16 @@ jobs:
       #     project-name: ${{ github.event.repository.name }}
       #     project-key: ${{ github.event.repository.name }}
       #     sonar-project-properties-file: 'sonar-project-custom.properties'
-  
+
   qa-deploy-virginia:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/qa'
     environment: qa
     needs: [install-prod-dependencies, sonar]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Checking LabActions
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: bancodebogota/bdb-dig-do-pipelines-action-s3
           ref: ''
@@ -187,13 +187,13 @@ jobs:
           persist-credentials: false
           path: ./.github/actions/bdb-dig-do-pipelines-action-s3
       - name: Restore cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.cache-path }}
           key: npm-${{ env.project_name }}-${{ hashFiles('**/package.json') }}
           restore-keys: npm-${{ env.project_name }}
       - name: Restore Data
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build
           path: ${{ env.build-folder }}
@@ -209,17 +209,17 @@ jobs:
           version: $GITHUB_SHA
           build-folder: ${{ env.build-folder }}
           bucket: qa-${{ env.bucket }}
-          distribution-id: ${{ env.distribution }}      
-    
+          distribution-id: ${{ env.distribution }}
+
   staging-deploy-virginia:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/staging'
     environment: st
     needs: [install-prod-dependencies, sonar]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Checking LabActions
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: bancodebogota/bdb-dig-do-pipelines-action-s3
           ref: ''
@@ -227,13 +227,13 @@ jobs:
           persist-credentials: false
           path: ./.github/actions/bdb-dig-do-pipelines-action-s3
       - name: Restore cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.cache-path }}
           key: npm-${{ env.project_name }}-${{ hashFiles('**/package.json') }}
           restore-keys: npm-${{ env.project_name }}
       - name: Restore Data
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build
           path: ${{ env.build-folder }}
@@ -249,7 +249,7 @@ jobs:
           version: $GITHUB_SHA
           build-folder: ${{ env.build-folder }}
           bucket: staging-${{ env.bucket }}
-          distribution-id: ${{ env.distribution }}      
+          distribution-id: ${{ env.distribution }}
 
   prod-deploy-virginia:
     runs-on: ubuntu-20.04
@@ -259,9 +259,9 @@ jobs:
     steps:
       - name: Running Linter
         run: echo "Example prod-deploy-virginia"
-      # - uses: actions/checkout@v2
+      # - uses: actions/checkout@v3
       # - name: Checking LabActions
-      #   uses: actions/checkout@v2
+      #   uses: actions/checkout@v3
       #   with:
       #     repository: bancodebogota/bdb-dig-do-pipelines-action-s3
       #     ref: ''
@@ -269,13 +269,13 @@ jobs:
       #     persist-credentials: false
       #     path: ./.github/actions/bdb-dig-do-pipelines-action-s3
       # - name: Restore cache
-      #   uses: actions/cache@v2
+      #   uses: actions/cache@v3
       #   with:
       #     path: ${{ env.cache-path }}
       #     key: npm-${{ env.project_name }}-${{ hashFiles('**/package.json') }}
       #     restore-keys: npm-${{ env.project_name }}
       # - name: Restore Data
-      #   uses: actions/download-artifact@v2
+      #   uses: actions/download-artifact@v3
       #   with:
       #     name: build
       #     path: ${{ env.build-folder }}
@@ -291,4 +291,4 @@ jobs:
       #     version: $GITHUB_SHA
       #     build-folder: ${{ env.build-folder }}
       #     bucket: prod-${{ env.bucket }}
-      #     distribution-id: ${{ env.distribution }}      
+      #     distribution-id: ${{ env.distribution }}
