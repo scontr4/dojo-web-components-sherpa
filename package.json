@@ -62,6 +62,7 @@
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
+    "@npm-bbta/bbog-dig-dt-webcomponents-lib": "^4.4.8",
     "babel-loader": "^9.1.0",
     "document-register-element": "^1.14.10",
     "node-forge": "^1.3.1",
