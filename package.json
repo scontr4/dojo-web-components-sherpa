@@ -83,7 +83,7 @@
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "5.3.0",
     "@typescript-eslint/parser": "5.3.0",
-    "@npm-bbta/bbog-dig-dt-sherpa-scanner-lib": "^1.1.1",
+    "@npm-bbta/bbog-hc-common-js-lib": "0.5.15",
     "eslint": "^8.2.0",
     "husky": "^7.0.4",
     "jest": "^27.4.7",
