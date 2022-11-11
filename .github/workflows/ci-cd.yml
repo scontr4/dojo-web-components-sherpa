@@ -7,7 +7,7 @@ on:
 env:
   language: "javascript"
   app-name: "angular-template-web-ui"
-  ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+  ARTIFACTORY_READER_API_KEY: ${{ secrets.ARTIFACTORY_READER_API_KEY }}
   ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
   aws-region: "us-east-1"
   build-folder: "dist/bbog-dig-angular-template-web-ui"
