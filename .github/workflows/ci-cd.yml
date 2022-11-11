@@ -34,8 +34,8 @@ jobs:
           restore-keys: npm-${{ env.project_name }}
       - name: Install Dependencies
         run: |
-          echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > .npmrc
-          curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> .npmrc
+          echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > ~/.npmrc
+          curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> ~/.npmrc
           npm install
   build:
     runs-on: ubuntu-latest
@@ -97,8 +97,8 @@ jobs:
       - run: ls
       - name: Install Dependencies
         run: |
-          echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > .npmrc
-          curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> .npmrc
+          echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > ~/.npmrc
+          curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> ~/.npmrc
           npm install
   # qa-scanner-front:
   #   runs-on: ubuntu-latest
