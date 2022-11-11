@@ -7,7 +7,7 @@ on:
 env:
   language: "javascript"
   app-name: "angular-template-web-ui"
-  ARTIFACTORY_READER_PASSWORD: ${{ secrets.ARTIFACTORY_READER_PASSWORD }}
+  ARTIFACTORY_READER_API_KEY: ${{ secrets.ARTIFACTORY_READER_API_KEY }}
   ARTIFACTORY_READER_USER: ${{ secrets.ARTIFACTORY_READER_USER }}
   aws-region: "us-east-1"
   build-folder: "dist/bbog-dig-angular-template-web-ui"
@@ -16,30 +16,6 @@ env:
   cache-path: node_modules
 
 jobs:
-  # qa-scanner-front:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Restore cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: ${{ env.cache_path }}
-  #         key: npm-${{ env.project_name }}-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: npm-${{ env.project_name }}
-  #     - name: Checkout Scann front
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: bancodebogota/bbog-dig-do-front-scanner
-  #         ref: ''
-  #         token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
-  #         persist-credentials: false
-  #         path: ./.github/actions/bbog-dig-do-front-scanner
-  #     - name: Front Scanner
-  #       uses: ./.github/actions/bbog-dig-do-front-scanner
-  #       with:
-  #         current-branch: QA | STG | MASTER
-  #         config-file: "./sherpa-scanner.config.js"
-
   install-dev-dependencies:
     runs-on: ubuntu-latest
     steps:
@@ -127,6 +103,44 @@ jobs:
           else
             npm ci --only=prod
           fi
+  qa-scanner-front:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.cache_path }}
+          key: npm-${{ env.project_name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Checkout Scann front
+        uses: actions/checkout@v2
+        with:
+          repository: bancodebogota/bbog-dig-do-front-scanner
+          ref: ''
+          token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+          persist-credentials: false
+          path: ./.github/actions/bbog-dig-do-front-scanner
+      - name: Current Branch
+        shell: bash
+        id: long-lived-branch
+        run: |
+          CURRENT_BRANCH=$(echo ${GITHUB_REF#refs/heads/})
+                  if [ "$CURRENT_BRANCH" != "master" ] && [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "qa" ]
+                  then
+                    CURRENT_BRANCH="qa"
+                  fi
+                  if [ "$CURRENT_BRANCH" == "staging" ]
+                  then
+                    CURRENT_BRANCH="STG"
+                  fi
+                  CURRENT_BRANCH=$(echo $CURRENT_BRANCH | tr 'a-z' 'A-Z')
+                  echo "Sonar Branch report => " ${CURRENT_BRANCH}
+                  echo "CURRENT_BRANCH='${CURRENT_BRANCH}'" >> $GITHUB_ENV
+      - name: Front Scanner
+        uses: ./.github/actions/bbog-dig-do-front-scanner
+        with:
+          current-branch:  ${{ env.CURRENT_BRANCH }}
+          config-file: "./sherpa-scanner.config.js"
   test:
     runs-on: ubuntu-latest
     needs: install-dev-dependencies
