@@ -100,29 +100,29 @@ jobs:
           echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > ~/.npmrc
           curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> ~/.npmrc
           npm install
-  qa-scanner-front:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Restore cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.cache_path }}
-          key: npm-${{ env.project_name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: npm-${{ env.project_name }}
-      - name: Checkout Scann front
-        uses: actions/checkout@v2
-        with:
-          repository: bancodebogota/bbog-dig-do-front-scanner
-          ref: ''
-          token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
-          persist-credentials: false
-          path: ./.github/actions/bbog-dig-do-front-scanner
-      - name: Front Scanner
-        uses: ./.github/actions/bbog-dig-do-front-scanner
-        with:
-          current-branch: QA
-          config-file: "./sherpa-scanner.config.js"
+  # qa-scanner-front:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Restore cache
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ${{ env.cache_path }}
+  #         key: npm-${{ env.project_name }}-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: npm-${{ env.project_name }}
+  #     - name: Checkout Scann front
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: bancodebogota/bbog-dig-do-front-scanner
+  #         ref: ''
+  #         token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+  #         persist-credentials: false
+  #         path: ./.github/actions/bbog-dig-do-front-scanner
+  #     - name: Front Scanner
+  #       uses: ./.github/actions/bbog-dig-do-front-scanner
+  #       with:
+  #         current-branch: QA
+  #         config-file: "./sherpa-scanner.config.js"
   test:
     runs-on: ubuntu-latest
     needs: install-dev-dependencies
