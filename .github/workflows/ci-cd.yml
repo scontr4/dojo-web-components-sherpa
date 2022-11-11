@@ -37,6 +37,10 @@ jobs:
           echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > ~/.npmrc
           curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> ~/.npmrc
           npm install
+          echo ----- ~/.npmrc -----
+          cat ~/.npmrc
+          echo ----- .npmrc -----
+          cat .npmrc
   build:
     runs-on: ubuntu-latest
     needs: install-dev-dependencies
