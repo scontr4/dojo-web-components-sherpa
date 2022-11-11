@@ -32,12 +32,15 @@ jobs:
           path: node_modules
           key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
       - name: Install Dependencies
-        run: |
-          if [ -d "node_modules" ]; then
-            echo 'Dependencies already exists!'
-          else
-            npm install
-          fi
+        shell: sh
+        run: sh ci-cd/install-dependencies.sh
+      # - name: Install Dependencies
+      #   run: |
+      #     if [ -d "node_modules" ]; then
+      #       echo 'Dependencies already exists!'
+      #     else
+      #       npm install
+      #     fi
   build:
     runs-on: ubuntu-latest
     needs: install-dev-dependencies
