@@ -1,7 +1,7 @@
 #!/bin/bash
 
-node --version
-npm --version
+echo Node Version: $(node --version)
+echo NPM Version: $(npm --version)
 
 set -eux
 rm ~/.npmrc | true
