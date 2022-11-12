@@ -31,6 +31,10 @@ jobs:
         with:
           path: node_modules
           key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
+      - name: Check Node version
+        run: |
+          node --version
+          npm --version
       - name: Install Dependencies
         run: |
           if [ -d "node_modules" ]; then
