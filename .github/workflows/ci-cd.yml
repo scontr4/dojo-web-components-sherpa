@@ -17,13 +17,13 @@ env:
 
 jobs:
   install-dev-dependencies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.16.0
+          node-version: 16.x
       - name: Restore or save cache for dev Dependencies
         uses: actions/cache@v3
         env:
@@ -40,7 +40,7 @@ jobs:
           fi
           
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: install-dev-dependencies
     steps:
       - uses: actions/checkout@v3
@@ -82,13 +82,13 @@ jobs:
           path: ${{ env.build-folder }}
 
   install-prod-dependencies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.16.0
+          node-version: 16.x
       - name: Restore or save cache for prod Dependencies
         uses: actions/cache@v3
         env:
@@ -106,7 +106,7 @@ jobs:
           fi
 
   # qa-scanner-front:
-  #   runs-on: ubuntu-latest
+  #   runs-on: ubuntu-20.04
   #   steps:
   #     - uses: actions/checkout@v3
   #     - name: Restore cache
@@ -129,7 +129,7 @@ jobs:
   #         current-branch: QA
   #         config-file: "./sherpa-scanner.config.js"
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: install-dev-dependencies
     steps:
       - uses: actions/checkout@v3
@@ -155,7 +155,7 @@ jobs:
           name: coverage
           path: coverage
   sonar:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [build, test]
     steps:
       - uses: actions/checkout@v3
@@ -197,7 +197,7 @@ jobs:
       #     sonar-project-properties-file: 'sonar-project-custom.properties'
 
   qa-deploy-virginia:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/qa'
     environment: qa
     needs: [install-prod-dependencies, sonar]
@@ -237,7 +237,7 @@ jobs:
           distribution-id: ${{ env.distribution }}
 
   staging-deploy-virginia:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/staging'
     environment: st
     needs: [install-prod-dependencies, sonar]
@@ -277,7 +277,7 @@ jobs:
           distribution-id: ${{ env.distribution }}
 
   prod-deploy-virginia:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
     environment: pr
     needs: [install-prod-dependencies, sonar]
