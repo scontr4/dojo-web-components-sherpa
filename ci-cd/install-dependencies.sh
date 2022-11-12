@@ -10,3 +10,5 @@ npm ci || exit 1
 
 echo --- cat
 cat ~/.npmrc
+
+npm ci || exit 1
