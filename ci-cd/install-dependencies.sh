@@ -3,8 +3,8 @@
 echo Node Version: $(node --version)
 echo NPM Version: $(npm --version)
 set -eux
-rm /home/runner/work/bbog-dig-dt-angular-template-web-ui/bbog-dig-dt-angular-template-web-ui/.npmrc | true
-curl -u "${ARTIFACTORY_READER_USER}:${ARTIFACTORY_READER_API_KEY}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> /home/runner/work/bbog-dig-dt-angular-template-web-ui/bbog-dig-dt-angular-template-web-ui/.npmrc
+rm ~/.npmrc | true
+curl -u "${ARTIFACTORY_READER_USER}:${ARTIFACTORY_READER_API_KEY}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> ~/.npmrc
 cat /home/runner/work/bbog-dig-dt-angular-template-web-ui/bbog-dig-dt-angular-template-web-ui/.npmrc
 
 # for macos only
