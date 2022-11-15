@@ -42,9 +42,9 @@ jobs:
           else
             npm ci
             sh ci-cd/install-dependencies.sh
+            echo ----- ~/.npmrc -----
+            cat ~/.npmrc
           fi
-          echo ----- ~/.npmrc -----
-          cat ~/.npmrc
           echo ----- .npmrc -----
           cat .npmrc
 
