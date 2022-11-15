@@ -31,6 +31,7 @@ jobs:
         with:
           path: node_modules
           key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
+        run: ls
       - name: Install Dependencies
         run: |
           sh ci-cd/install-dependencies.sh
