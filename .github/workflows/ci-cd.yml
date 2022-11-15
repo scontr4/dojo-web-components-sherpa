@@ -35,6 +35,12 @@ jobs:
         run: ls
       - name: pwd path
         run: pwd
+      - name: print .npmrc
+        run: |
+          echo ----- /home/runner/work/bbog-dig-dt-angular-template-web-ui/bbog-dig-dt-angular-template-web-ui/.npmrc -----
+          cat /home/runner/work/bbog-dig-dt-angular-template-web-ui/bbog-dig-dt-angular-template-web-ui/.npmrc
+          echo ----- .npmrc -----
+          cat .npmrc
       - name: Install Dependencies
         run: |
           sh ci-cd/install-dependencies.sh
