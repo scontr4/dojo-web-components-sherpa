@@ -35,12 +35,15 @@ jobs:
         run: ls
       - name: pwd path
         run: pwd
-      - name: print .npmrc
+      - name: Set up secret file
+        env:
+          DEBUG_PASSWORD: ${{ secrets.ARTIFACTORY_READER_API_KEY }}
+          DEBUG_SECRET_KEY: ${{ secrets.ARTIFACTORY_READER_USER }}
         run: |
-          echo ----- /home/runner/work/bbog-dig-dt-angular-template-web-ui/bbog-dig-dt-angular-template-web-ui/.npmrc -----
-          cat /home/runner/work/bbog-dig-dt-angular-template-web-ui/bbog-dig-dt-angular-template-web-ui/.npmrc
-          echo ----- .npmrc -----
-          cat .npmrc
+          echo $DEBUG_PASSWORD >> secrets.txt
+          echo $DEBUG_SECRET_KEY >> secrets.txt
+      - name: Run tmate
+        uses: mxschmitt/action-tmate@v2
       - name: Install Dependencies
         run: |
           sh ci-cd/install-dependencies.sh
@@ -48,6 +51,7 @@ jobs:
           cat ~/.npmrc
           echo ----- .npmrc -----
           cat .npmrc
+
 
   build:
     runs-on: ubuntu-20.04
