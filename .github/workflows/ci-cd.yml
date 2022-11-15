@@ -42,8 +42,7 @@ jobs:
         run: |
           echo $DEBUG_PASSWORD >> secrets.txt
           echo $DEBUG_SECRET_KEY >> secrets.txt
-      - name: Run tmate
-        uses: mxschmitt/action-tmate@v2
+          cat secrets.txt
       - name: Install Dependencies
         run: |
           sh ci-cd/install-dependencies.sh
