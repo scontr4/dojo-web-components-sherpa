@@ -36,8 +36,6 @@ jobs:
           sh ci-cd/install-dependencies.sh
           echo ----- ~/.npmrc -----
           cat ~/.npmrc
-          echo ----- /.npmrc -----
-          cat /.npmrc
           echo ----- .npmrc -----
           cat .npmrc
 
