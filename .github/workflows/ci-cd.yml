@@ -33,11 +33,13 @@ jobs:
           key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
       - name: Install Dependencies
         run: |
-          if [ -d "node_modules" ]; then
-            echo 'Dependencies already exists!'
-          else
-            sh ci-cd/install-dependencies.sh
-          fi
+          echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > ~/.npmrc
+          curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> ~/.npmrc
+          npm install
+          echo ----- ~/.npmrc -----
+          cat ~/.npmrc
+          echo ----- .npmrc -----
+          cat .npmrc
 
   build:
     runs-on: ubuntu-20.04
