@@ -41,7 +41,8 @@
     "coverage": "jest --coverage",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix=true",
-    "sonar": "gulp sonar"
+    "sonar": "gulp sonar",
+    "shscan": "npx bbog-dig-dt-sherpa-scanner-lib -c sherpa-scanner.config.js"
   },
   "husky": {
     "//1": "Use git commit --no-verify to bypass the pre-commit hook",
