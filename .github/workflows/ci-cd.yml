@@ -208,15 +208,15 @@ jobs:
   qa-scanner-front:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Restore cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.cache-path }}
           key: npm-${{ env.project_name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: npm-${{ env.project_name }}
       - name: Checkout Scann front
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: bancodebogota/bbog-dig-do-front-scanner
           ref: ''
@@ -226,8 +226,7 @@ jobs:
       - name: Front Scanner
         uses: ./.github/actions/bbog-dig-do-front-scanner
         with:
-          current-branch: QA | STG | MASTER
-          config-file: "./sherpa-scanner.config.js"
+          current-branch: QA
 
 
   qa-deploy-virginia:
