@@ -205,6 +205,30 @@ jobs:
       #     project-name: ${{ github.event.repository.name }}
       #     project-key: ${{ github.event.repository.name }}
       #     sonar-project-properties-file: 'sonar-project-custom.properties'
+  qa-scanner-front:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.cache_path }}
+          key: npm-${{ env.project_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: npm-${{ env.project_name }}
+      - name: Checkout Scann front
+        uses: actions/checkout@v2
+        with:
+          repository: bancodebogota/bbog-dig-do-front-scanner
+          ref: ''
+          token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
+          persist-credentials: false
+          path: ./.github/actions/bbog-dig-do-front-scanner
+      - name: Front Scanner
+        uses: ./.github/actions/bbog-dig-do-front-scanner
+        with:
+          current-branch: QA | STG | MASTER
+          config-file: "./sherpa-scanner.config.js"
+
 
   qa-deploy-virginia:
     runs-on: ubuntu-20.04
