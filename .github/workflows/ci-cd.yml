@@ -16,33 +16,33 @@ env:
   cache-path: node_modules
 
 jobs:
-  # install-dev-dependencies:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Use Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 14.x
-  #     - name: Restore or save cache for dev Dependencies
-  #       uses: actions/cache@v3
-  #       env:
-  #         cache-name: npm-node-modules-dev
-  #       with:
-  #         path: node_modules
-  #         key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
-  #     - name: ls files
-  #       run: ls
-  #     - name: pwd path
-  #       run: pwd
-  #     - name: Install Dependencies
-  #       run: |
-  #         chmod +x ci-cd/install-dependencies.sh
-  #         sh ci-cd/install-dependencies.sh
-  #         echo ----- ~/.npmrc -----
-  #         cat ~/.npmrc
-  #         echo ----- .npmrc -----
-  #         cat .npmrc
+  install-dev-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.x
+      - name: Restore or save cache for dev Dependencies
+        uses: actions/cache@v3
+        env:
+          cache-name: npm-node-modules-dev
+        with:
+          path: node_modules
+          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
+      - name: ls files
+        run: ls
+      - name: pwd path
+        run: pwd
+      - name: Install Dependencies
+        run: |
+          chmod +x ci-cd/install-dependencies.sh
+          sh ci-cd/install-dependencies.sh
+          echo ----- ~/.npmrc -----
+          cat ~/.npmrc
+          echo ----- .npmrc -----
+          cat .npmrc
     # if [ -d "node_modules" ]; then
     #   echo 'Dependencies already exists!'
     # else
@@ -53,34 +53,31 @@ jobs:
     # fi
     # echo ----- .npmrc -----
     # cat .npmrc
-
-  install-dev-dependencies:
+  install-prod-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 14.x
-      - name: Restore or save cache for dependencies
-        uses: actions/cache@v2
+      - name: Restore or save cache for prod Dependencies
+        uses: actions/cache@v3
+        env:
+          cache-name: npm-node-modules-prod
         with:
           path: node_modules
-          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
+          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-prod
+      - run: ls
       - name: Install Dependencies
         run: |
-          echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > ~/.npmrc
-          curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> ~/.npmrc
-          if [ -e yarn.lock ]; then
-            yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-            npm ci
+          if [ -d "node_modules" ]; then
+            echo 'Dependencies already exists!'
           else
-            npm install
+            sh ci-cd/install-dependencies-prod.sh
           fi
-
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: ['install-dev-dependencies','install-prod-dependencies']
     steps:
       - uses: actions/checkout@v3
@@ -121,54 +118,8 @@ jobs:
           name: build
           path: ${{ env.build-folder }}
 
-  install-prod-dependencies:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14.x
-      - name: Restore or save cache for dependencies
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
-      - name: Install Dependencies
-        run: |
-          echo @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/ > ~/.npmrc
-          curl -u "${{ env.ARTIFACTORY_READER_USER }}:${{ env.ARTIFACTORY_READER_API_KEY }}" 'https://bbogdigital.jfrog.io/bbogdigital/api/npm/auth' >> ~/.npmrc
-          if [ -e yarn.lock ]; then
-            yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-            npm ci --only=prod
-          else
-            npm install
-          fi
-    # runs-on: ubuntu-20.04
-    # steps:
-    #   - uses: actions/checkout@v3
-    #   - name: Use Node.js
-    #     uses: actions/setup-node@v3
-    #     with:
-    #       node-version: 14.x
-    #   - name: Restore or save cache for prod Dependencies
-    #     uses: actions/cache@v3
-    #     env:
-    #       cache-name: npm-node-modules-prod
-    #     with:
-    #       path: node_modules
-    #       key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-prod
-    #   - run: ls
-    #   - name: Install Dependencies
-    #     run: |
-    #       if [ -d "node_modules" ]; then
-    #         echo 'Dependencies already exists!'
-    #       else
-    #         sh ci-cd/install-dependencies-prod.sh
-    #       fi
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: install-dev-dependencies
     steps:
       - uses: actions/checkout@v3
@@ -194,7 +145,7 @@ jobs:
           name: coverage
           path: coverage
   sonar:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [build, test]
     steps:
       - uses: actions/checkout@v3
@@ -259,7 +210,7 @@ jobs:
 
 
   qa-deploy-virginia:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/qa'
     environment: qa
     needs: [install-prod-dependencies, sonar]
@@ -299,7 +250,7 @@ jobs:
           distribution-id: ${{ env.distribution }}
 
   staging-deploy-virginia:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/staging'
     environment: st
     needs: [install-prod-dependencies, sonar]
@@ -339,7 +290,7 @@ jobs:
           distribution-id: ${{ env.distribution }}
 
   prod-deploy-virginia:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     environment: pr
     needs: [install-prod-dependencies, sonar]
