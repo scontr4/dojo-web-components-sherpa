@@ -144,6 +144,12 @@ jobs:
         with:
           name: coverage
           path: coverage
+  sherpa-scan:
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    steps:
+      - name: exec config Scann
+        run: npx bbog-dig-dt-sherpa-scanner-lib -c sherpa-scanner.config.js
   sonar:
     runs-on: ubuntu-latest
     needs: [build, test]
