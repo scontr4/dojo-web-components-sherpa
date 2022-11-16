@@ -212,7 +212,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v2
         with:
-          path: ${{ env.cache_path }}
+          path: ${{ env.cache-path }}
           key: npm-${{ env.project_name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: npm-${{ env.project_name }}
       - name: Checkout Scann front
