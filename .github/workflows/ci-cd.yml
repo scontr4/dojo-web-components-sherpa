@@ -224,7 +224,8 @@ jobs:
       - name: Front Scanner
         uses: ./.github/actions/bbog-dig-do-front-scanner
         with:
-          current-branch: QA
+          current-branch: MASTER
+          config-file: "./sherpa-scanner.config.js"
 
 
   qa-deploy-virginia:
