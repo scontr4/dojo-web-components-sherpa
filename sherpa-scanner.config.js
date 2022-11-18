@@ -3,7 +3,7 @@ module.exports = {
   branch: "QA",
   repository: "ANGULAR-TEMPLATE",
   framework: "ANGULAR",
-  version: "1.1.1",
+  version: "3.8.2",
   crawlFrom: "./src",
   globs: ["**/!(*.test|*.spec).@(xhtml|html)?(x)"],
   url: "https://3mt8atlcre.execute-api.us-east-1.amazonaws.com/v1/v1/utilities/web-components/use-report",
