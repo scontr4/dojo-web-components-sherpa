@@ -43,16 +43,7 @@ jobs:
           cat ~/.npmrc
           echo ----- .npmrc -----
           cat .npmrc
-    # if [ -d "node_modules" ]; then
-    #   echo 'Dependencies already exists!'
-    # else
-    #   npm ci
-    #   sh ci-cd/install-dependencies.sh
-    #   echo ----- ~/.npmrc -----
-    #   cat ~/.npmrc
-    # fi
-    # echo ----- .npmrc -----
-    # cat .npmrc
+
   install-prod-dependencies:
     runs-on: ubuntu-latest
     steps:
@@ -76,6 +67,7 @@ jobs:
           else
             sh ci-cd/install-dependencies-prod.sh
           fi
+
   build:
     runs-on: ubuntu-latest
     needs: ['install-dev-dependencies','install-prod-dependencies']
@@ -144,24 +136,7 @@ jobs:
         with:
           name: coverage
           path: coverage
-  sherpa-scan:
-    runs-on: ubuntu-latest
-    needs: [build, test]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14.x
-      - name: Restore or save cache for dev Dependencies
-        uses: actions/cache@v3
-        env:
-          cache-name: npm-node-modules-dev
-        with:
-          path: node_modules
-          key: npm-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-dev
-      - name: exec config Scann
-        run: npm run shscan
+
   sonar:
     runs-on: ubuntu-latest
     needs: [build, test]
@@ -185,24 +160,7 @@ jobs:
       - name: Current Branch
         shell: bash
         run: echo "Example reporting to Sonar"
-      #  id: long-lived-branch
-      #   run: |
-      #     CURRENT_BRANCH=$(echo ${GITHUB_REF#refs/heads/})
-      #     if [ "$CURRENT_BRANCH" != "master" ] && [ "$CURRENT_BRANCH" != "staging" ] && [ "$CURRENT_BRANCH" != "qa" ]
-      #     then
-      #       CURRENT_BRANCH="qa"
-      #     fi
-      #     echo "##[set-output name=branch;]$(echo ${CURRENT_BRANCH})"
-      #     echo "Sonar Branch report => " ${CURRENT_BRANCH}
-      # - name: SonarCloud Scanner
-      #   uses: ./.github/actions/bbog-dig-sonarcloud-pipeline
-      #   with:
-      #     language: ${{ env.language }}
-      #     current-branch: ${{ steps.long-lived-branch.outputs.branch }}
-      #     access-token: ${{ secrets.SONAR_CLOUD_TOKEN }}
-      #     project-name: ${{ github.event.repository.name }}
-      #     project-key: ${{ github.event.repository.name }}
-      #     sonar-project-properties-file: 'sonar-project-custom.properties'
+
   qa-scanner-front:
     runs-on: ubuntu-latest
     needs: [build, test]
@@ -317,36 +275,4 @@ jobs:
     steps:
       - name: Running Linter
         run: echo "Example prod-deploy-virginia"
-      # - uses: actions/checkout@v3
-      # - name: Checking LabActions
-      #   uses: actions/checkout@v3
-      #   with:
-      #     repository: bancodebogota/bdb-dig-do-pipelines-action-s3
-      #     ref: ''
-      #     token: ${{ secrets.DIG_READER_GITHUB_ACCESS_TOKEN }}
-      #     persist-credentials: false
-      #     path: ./.github/actions/bdb-dig-do-pipelines-action-s3
-      # - name: Restore cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ${{ env.cache-path }}
-      #     key: npm-${{ env.project_name }}-${{ hashFiles('**/package.json') }}
-      #     restore-keys: npm-${{ env.project_name }}
-      # - name: Restore Data
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: build
-      #     path: ${{ env.build-folder }}
-      # - name: Deploy
-      #   uses: ./.github/actions/bdb-dig-do-pipelines-action-s3/S3
-      #   with:
-      #     aws-account-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ${{ env.aws-region }}
-      #     app-name: ${{ env.app-name }}
-      #     enable-custom-app-name: false
-      #     version: $GITHUB_SHA
-      #     build-folder: ${{ env.build-folder }}
-      #     bucket: prod-${{ env.bucket }}
-      #     distribution-id: ${{ env.distribution }}
+
