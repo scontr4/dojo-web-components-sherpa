@@ -16,7 +16,7 @@ Up until this point, you're ready to start working on your development.
 As of the `package.json`, you have pretty much all the common `scripts` such as:
 
 ```bash
-# Install dependencies, needs npm 8.11.0 and node 16.16.0
+# Install dependencies, needs npm 8.11.0 and node 14.21.1
 npm i
 
 # Run locally
