@@ -35,10 +35,6 @@ jobs:
         run: |
           chmod +x ci-cd/install-dependencies.sh
           sh ci-cd/install-dependencies.sh
-          echo ----- ~/.npmrc -----
-          cat ~/.npmrc
-          echo ----- .npmrc -----
-          cat .npmrc
 
   install-prod-dependencies:
     runs-on: ubuntu-latest
