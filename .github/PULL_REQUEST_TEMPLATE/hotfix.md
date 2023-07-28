@@ -1,8 +1,0 @@
-# Hotfix
-
-## Correcciones
-
- -
- -
- -
- 

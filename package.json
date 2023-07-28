@@ -39,10 +39,12 @@
     "build:prod": "ng build --configuration=production --prod",
     "test": "npm run lint && jest",
     "coverage": "jest --coverage",
+    "test:coverage": "npm run test && npm run coverage",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix=true",
     "sonar": "gulp sonar",
-    "shscan": "npx bbog-dig-dt-sherpa-scanner-lib -c sherpa-scanner.config.js"
+    "shscan": "npx bbog-dig-dt-sherpa-scanner-lib -c sherpa-scanner.config.js",
+    "test:config": "npm run test && npm run coverage"
   },
   "husky": {
     "//1": "Use git commit --no-verify to bypass the pre-commit hook",
