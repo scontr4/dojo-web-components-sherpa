@@ -1,5 +1,5 @@
 {
-  "name": "bbog-dig-angular-template-web-ui",
+  "name": "bbog-dig-dt-angular-template-web-ui",
   "version": "1.0.2",
   "description": "Template example for generating frontend repos for bdb. Courtesy of @mnieto2 and @aacos13",
   "keywords": [
@@ -12,7 +12,7 @@
   ],
   "bugs": {
     "email": "mnieto2@bancodebogota.com.co",
-    "url": "https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/issues"
+    "url": "https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/issues"
   },
   "author": {
     "email": "mnieto2@bancodebogota.com.co",
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bancodebogota/bbog-dig-angular-template-web-ui.git"
+    "url": "https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui.git"
   },
   "license": "MIT",
   "scripts": {
@@ -35,8 +35,8 @@
     "dev": "ng serve --port $PORT",
     "build": "ng build",
     "build:qa": "ng build --configuration=qa --aot",
-    "build:st": "ng build --configuration=stage --aot",
-    "build:prod": "ng build --configuration=production --prod",
+    "build:st": "ng build --configuration=staging --aot",
+    "build:prod": "ng build --configuration=production",
     "test": "npm run lint && jest",
     "coverage": "jest --coverage",
     "test:coverage": "npm run test && npm run coverage",
