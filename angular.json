@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bbog-dig-angular-template-web-ui": {
+    "bbog-dig-dt-angular-template-web-ui": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/bbog-dig-angular-template-web-ui",
+            "outputPath": "dist/bbog-dig-dt-angular-template-web-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -28,10 +28,16 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@npm-bbta/bbog-dig-dt-webcomponents-lib/dist/collection/assets/",
+                "output": "./assets"
+              }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/@npm-bbta/bbog-dig-dt-webcomponents-lib/dist/bdb-webcomponents/bdb-webcomponents.css"
             ],
             "scripts": []
           },
@@ -59,7 +65,7 @@
                 }
               ]
             },
-            "stage": {
+            "staging": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -119,14 +125,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "bbog-dig-angular-template-web-ui:build"
+            "browserTarget": "bbog-dig-dt-angular-template-web-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "bbog-dig-angular-template-web-ui:build:production"
+              "browserTarget": "bbog-dig-dt-angular-template-web-ui:build:production"
             },
             "development": {
-              "browserTarget": "bbog-dig-angular-template-web-ui:build:development"
+              "browserTarget": "bbog-dig-dt-angular-template-web-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -134,7 +140,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bbog-dig-angular-template-web-ui:build"
+            "browserTarget": "bbog-dig-dt-angular-template-web-ui:build"
           }
         },
         "test": {
@@ -151,7 +157,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/@npm-bbta/bbog-dig-dt-webcomponents-lib/dist/bdb-webcomponents/bdb-webcomponents.css"
             ],
             "scripts": []
           }
@@ -168,7 +175,7 @@
       }
     }
   },
-  "defaultProject": "bbog-dig-angular-template-web-ui",
+  "defaultProject": "bbog-dig-dt-angular-template-web-ui",
   "cli": {
     "analytics": "600d3bab-efe6-413a-a7ec-ba1a54289d2b",
     "defaultCollection": "@angular-eslint/schematics"

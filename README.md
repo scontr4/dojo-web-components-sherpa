@@ -7,7 +7,7 @@ This directory is a brief example of an [Angular](https://angular.io/) app that 
 
 Right after your new repository has been created based on this template, you need to include the project name inside it.
 
-For that, go ahead and **Find and Replace** _"bbog-dig-angular-template-web-ui"_ with whatever is your new project repo name. Something like _"bbog-something-web-ui"_.
+For that, go ahead and **Find and Replace** _"bbog-dig-dt-angular-template-web-ui"_ with whatever is your new project repo name. Something like _"bbog-something-web-ui"_.
 
 Up until this point, you're ready to start working on your development.
 
@@ -16,7 +16,7 @@ Up until this point, you're ready to start working on your development.
 As of the `package.json`, you have pretty much all the common `scripts` such as:
 
 ```bash
-# Install dependencies
+# Install dependencies, needs npm 8.11.0 and node 14.21.1
 npm i
 
 # Run locally
@@ -45,9 +45,9 @@ Also if you want to brag about how well your Github Actions workflows passed, ch
 
 | Environment | Branch | Badge |
 | :--- | :---: | ---: |
-| Production | `master` | ![Production Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Production%20Deployment/badge.svg?branch=master) |
-| Stage | `stage` | ![Stage Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/Stage%20Deployment/badge.svg?branch=stage) |
-| QA | `qa` | ![QA Deployment](https://github.com/bancodebogota/bbog-dig-angular-template-web-ui/workflows/QA%20Deployment/badge.svg?branch=qa) |
+| Production | `master` | ![Production Deployment](https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/workflows/Production%20Deployment/badge.svg?branch=master) |
+| Stage | `stage` | ![Stage Deployment](https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/workflows/Stage%20Deployment/badge.svg?branch=stage) |
+| QA | `qa` | ![QA Deployment](https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/workflows/QA%20Deployment/badge.svg?branch=qa) |
 
 ## Help
 
