@@ -6,11 +6,21 @@
   padding: 24px 16px;
 
   &__title {
+    display: block;
     margin-bottom: 24px;
   }
 }
 
+.sp-text-heading-7 {
+  padding-top: 16px;
+  font-size: 18px;
+  font-weight: 700;
+}
 .form-group {
   display: block;
   margin: 16px 0;
+}
+
+.grid-item {
+  margin: 32px 0;
 }
