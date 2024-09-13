@@ -4,4 +4,8 @@
   border: 1px solid var(--sp-carbon-200);
   background-color: white;
   padding: 24px 16px;
+
+  &__title {
+    margin-bottom: 24px;
+  }
 }
