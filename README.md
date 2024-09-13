@@ -1,13 +1,12 @@
-# BdB Angular Template
+# BdB React Template
 
-
-This directory is a brief example of an [Angular](https://angular.io/) app that can be used for the companie's products.
+This directory is a brief example of an [React](https://es.react.dev/) app that can be used for the companie's products.
 
 ## Build It For Your Own Team
 
 Right after your new repository has been created based on this template, you need to include the project name inside it.
 
-For that, go ahead and **Find and Replace** _"bbog-dig-dt-angular-template-web-ui"_ with whatever is your new project repo name. Something like _"bbog-something-web-ui"_.
+For that, go ahead and **Find and Replace** _"bbog-dig-dt-react-template-web-ui"_ with whatever is your new project repo name. Something like _"bbog-something-web-ui"_.
 
 Up until this point, you're ready to start working on your development.
 
@@ -16,8 +15,29 @@ Up until this point, you're ready to start working on your development.
 As of the `package.json`, you have pretty much all the common `scripts` such as:
 
 ```bash
+# Loging to bbogdigital registry
+npm login --registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/
+
 # Install dependencies, needs npm 8.11.0 and node 14.21.1
 npm i
+
+# Install webcomponents library
+# Make sure you have the .npmrc file in your root directory with the following line
+# @npm-bbta:registry=https://bbogdigital.jfrog.io/bbogdigital/api/npm/npm-bbta/
+npm i @npm-bbta/bbog-dig-dt-webcomponents-lib
+
+# Intall typescript 
+npm install --save typescript @types/node @types/react @types/react-dom @types/jest
+
+# Intall react router dom
+npm install react-router-dom 
+npm install --save @types/react-router-dom
+
+# Getting webComponents assets (no copia los fonts)
+cp -r -f node_modules/@npm-bbta/bbog-dig-dt-webcomponents-lib/dist/bdb-webcomponents/assets/fonts ./src/assets
+
+# /assets/ cambiar por ./assets/
+cp -f node_modules/@npm-bbta/bbog-dig-dt-webcomponents-lib/dist/bdb-webcomponents/bdb-webcomponents.css ./src
 
 # Run locally
 npm run start
@@ -51,4 +71,4 @@ Also if you want to brag about how well your Github Actions workflows passed, ch
 
 ## Help
 
-If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else or you just wanna chat, go talk to him ->[👨🏻‍💻](https://github.com/aacos13)
+If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else or you just wanna chat, go and cotact the synergy team - ![Support Team](https://bancodebogotaconfluence.atlassian.net/wiki/spaces/LABDIGITAL/pages/3751870803/DT+-+Radicaci+n+de+Soporte)

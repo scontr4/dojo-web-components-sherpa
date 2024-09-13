@@ -1,113 +1,57 @@
 {
-  "name": "bbog-dig-dt-angular-template-web-ui",
-  "version": "1.0.2",
-  "description": "Template example for generating frontend repos for bdb. Courtesy of @mnieto2 and @aacos13",
-  "keywords": [
-    "github",
-    "actions",
-    "angular",
-    "husky",
-    "bbog",
-    "template"
-  ],
-  "bugs": {
-    "email": "mnieto2@bancodebogota.com.co",
-    "url": "https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/issues"
-  },
-  "author": {
-    "email": "mnieto2@bancodebogota.com.co",
-    "name": "Mateo Nieto",
-    "url": "https://github.com/mnieto2"
-  },
-  "author2": {
-    "email": "aacos13@bancodebogota.com.co",
-    "name": "Andres Mauricio Acosta Pulido",
-    "url": "https://github.com/aacos13"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui.git"
-  },
-  "license": "MIT",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "dev": "ng serve --port $PORT",
-    "build": "ng build",
-    "build:qa": "ng build --configuration=qa --aot",
-    "build:st": "ng build --configuration=staging --aot",
-    "build:prod": "ng build --configuration=production",
-    "test": "npm run lint && jest",
-    "coverage": "jest --coverage",
-    "test:coverage": "npm run test && npm run coverage",
-    "lint": "ng lint",
-    "lint:fix": "ng lint --fix=true",
-    "sonar": "gulp sonar",
-    "shscan": "npx bbog-dig-dt-sherpa-scanner-lib -c sherpa-scanner.config.js",
-    "test:config": "npm run test && npm run coverage"
-  },
-  "husky": {
-    "//1": "Use git commit --no-verify to bypass the pre-commit hook",
-    "//2": "Use git push --no-verify to bypass the pre-push hook",
-    "hooks": {
-      "pre-commit": "npm run lint",
-      "pre-push": "npm run test"
-    }
-  },
+  "name": "my-react-template-app",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@angular/animations": "^16.1.7",
-    "@angular/common": "~16.1.7",
-    "@angular/compiler": "~16.1.7",
-    "@angular/core": "~16.1.7",
-    "@angular/elements": "^16.1.7",
-    "@angular/forms": "~16.1.7",
-    "@angular/platform-browser": "~16.1.7",
-    "@angular/platform-browser-dynamic": "~16.1.7",
-    "@angular/router": "~16.1.7",
-    "@npm-bbta/bbog-dig-dt-sherpa-scanner-lib": "^1.1.1",
-    "@npm-bbta/bbog-dig-dt-webcomponents-lib": "^5.0.8",
-    "babel-loader": "^9.1.3",
-    "document-register-element": "^1.14.10",
-    "node-forge": "^1.3.1",
-    "rxjs": "~7.8.1",
-    "terser": "^5.19.2",
-    "tslib": "^2.6.1",
-    "zone.js": "~0.13.1"
+    "@npm-bbta/bbog-dig-dt-webcomponents-lib": "^5.2.6",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.5",
+    "@types/react": "^18.2.74",
+    "@types/react-dom": "^18.2.24",
+    "@types/react-router-dom": "^5.3.3",
+    "dotenv": "^16.4.5",
+    "prettier": "^3.2.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.7.4",
+    "web-vitals": "^2.1.4"
   },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^16.1.6",
-    "@angular-eslint/builder": "16.1.0",
-    "@angular-eslint/eslint-plugin": "16.1.0",
-    "@angular-eslint/eslint-plugin-template": "16.1.0",
-    "@angular-eslint/schematics": "16.1.0",
-    "@angular-eslint/template-parser": "16.1.0",
-    "@angular/cli": "^16.1.6",
-    "@angular/compiler-cli": "~16.1.7",
-    "@types/jest": "^29.5.3",
-    "@types/node": "^20.4.5",
-    "@typescript-eslint/eslint-plugin": "6.2.0",
-    "@typescript-eslint/parser": "6.2.0",
-    "eslint": "^8.46.0",
-    "husky": "^8.0.3",
-    "jest": "^29.6.2",
-    "jest-preset-angular": "^13.1.1",
-    "typescript": "~5.1.6"
+  "scripts": {
+    "start": "REACT_APP_ENVIRONMENT=development react-scripts start",
+    "build:dev": "REACT_APP_ENVIRONMENT=develop react-scripts build",
+    "build:qa": "REACT_APP_ENVIRONMENT=qa react-scripts build",
+    "build:st": "REACT_APP_ENVIRONMENT=st react-scripts build",
+    "build:pr": "REACT_APP_ENVIRONMENT=pr react-scripts build",
+    "build:prod": "react-scripts build",
+    "prettier:check": "prettier --check \"src/**/*.ts\"",
+    "prettier:write": "prettier --config .prettierrc.json --write \"src/**/*.ts\"",
+    "test": "react-scripts test --coverage --watchAll=false",
+    "test:coverage": "npm run prettier:check && react-scripts test --coverage --watchAll=false ",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext js,ts,tsx"
   },
-  "jest": {
-    "preset": "jest-preset-angular",
-    "setupFilesAfterEnv": [
-      "<rootDir>/jestSetup.ts"
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ],
-    "testPathIgnorePatterns": [
-      "<rootDir>/node_modules/",
-      "<rootDir>/dist/"
-    ],
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "<rootDir>/tsconfig.spec.json",
-        "stringifyContentPathRegex": "\\.html$"
-      }
-    }
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
