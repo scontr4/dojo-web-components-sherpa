@@ -18,10 +18,25 @@
     message="Mensaje de error"
   ></sp-ml-slider>
   <div class="form-group">
-    <sp-at-input  label="¿Durante cuánto tiempo? (en meses)" message="Desde 3 meses hasta 33 meses" placeholder="Ej. 6 meses" type="TEXT" status="HELP" required="true" view-mode></sp-at-input>
+    <sp-at-input
+      label="¿Durante cuánto tiempo? (en meses)"
+      message="Desde 3 meses hasta 33 meses"
+      placeholder="Ej. 6 meses"
+      type="TEXT"
+      status="HELP"
+      required="true"
+      view-mode
+    ></sp-at-input>
   </div>
 
-  <button class='sp-at-btn sp-at-btn--primary sp-at-btn--lg '>
-    ¡Crear mi CDT ya!
+  <div class="grid-item">
+    <h6 class="sp-text-heading-7">Al terminar el tiempo recibirás:</h6>
+    <sp-ml-compound-list
+      data-sections='[{"id":0,"Valor":"","linkButton":"","section":[{"text":"Valor","value":"194.760","decimals":"00","bold":true},{"text":"Rendimientos totales","value":"7.000.000","decimals":"00","bold":true},{"text":"Tasa fija E.a:","value":"2.9%","bold":true}]}]'
+    ></sp-ml-compound-list>
+  </div>
+
+  <button class="sp-at-btn sp-at-btn--primary sp-at-btn--lg">
+    Quiero invertir
   </button>
 </div>

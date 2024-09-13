@@ -6,17 +6,34 @@
   padding: 24px 16px;
 
   &__title {
-    margin-bottom: 24px;
+    display: block;
   }
+}
+
+.sp-text-paragraph-m {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.sp-text-heading-7 {
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .card__title > * {
   margin-bottom: 16px;
 }
+
 .card > * {
   margin-bottom: 24px;
 }
+
 .form-group {
   display: block;
   margin: 16px 0;
+}
+
+.grid-item {
+  margin: 32px 0;
 }
