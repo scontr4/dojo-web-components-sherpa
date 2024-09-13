@@ -1,11 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+$font-family-path: "@npm-bbta/bbog-dig-dt-sherpa-lib/dist/collection";
+@import "@npm-bbta/bbog-dig-dt-sherpa-lib/dist/collection/assets/fonts/fonts.scss";
 
+$icons-path: "@npm-bbta/bbog-dig-dt-sherpa-lib/dist/collection";
+@import "@npm-bbta/bbog-dig-dt-sherpa-lib/dist/collection/assets/fonts/icons.scss";
 
-* {
-    box-sizing: border-box;
-}
-
-html,
 body {
-    margin: 0
+  margin: 0;
+  padding: 0;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Kiffo-BDB", sans-serif;
+    margin: 0;
+  }
+
+  p {
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+  }
 }

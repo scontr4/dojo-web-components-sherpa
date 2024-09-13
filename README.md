@@ -1,54 +1,27 @@
-# BdB Angular Template
+# SherpaDay
 
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.4.
 
-This directory is a brief example of an [Angular](https://angular.io/) app that can be used for the companie's products.
+## Development server
 
-## Build It For Your Own Team
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-Right after your new repository has been created based on this template, you need to include the project name inside it.
+## Code scaffolding
 
-For that, go ahead and **Find and Replace** _"bbog-dig-dt-angular-template-web-ui"_ with whatever is your new project repo name. Something like _"bbog-something-web-ui"_.
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-Up until this point, you're ready to start working on your development.
+## Build
 
-## Commands
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-As of the `package.json`, you have pretty much all the common `scripts` such as:
+## Running unit tests
 
-```bash
-# Install dependencies, needs npm 8.11.0 and node 14.21.1
-npm i
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-# Run locally
-npm run start
-# or
-npm run dev 4201
+## Running end-to-end tests
 
-# Run tests
-npm run test
+Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-# Run linter
-npm run lint
-```
+## Further help
 
-## The _".yml"_ files
-
-This project deploys using Github CI A.K.A Github Actions. This means everything you know about CircleCI up until now is gone. Boom. Ciao. Hasta la vista. You serve to a new god.
-
-Before you start making commits and make Github Actions workflows fail because of CI configurations, make sure your team DevOps or most experienced developer validates the contents in the `.github/workflows/*.yml` files. 
-
-Please. PLEASE. Do not start building jobs until you have `.yml` files configured for your team's AWS environment.
-
-## Badges
-
-Also if you want to brag about how well your Github Actions workflows passed, check this out.
-
-| Environment | Branch | Badge |
-| :--- | :---: | ---: |
-| Production | `master` | ![Production Deployment](https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/workflows/Production%20Deployment/badge.svg?branch=master) |
-| Stage | `stage` | ![Stage Deployment](https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/workflows/Stage%20Deployment/badge.svg?branch=stage) |
-| QA | `qa` | ![QA Deployment](https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/workflows/QA%20Deployment/badge.svg?branch=qa) |
-
-## Help
-
-If by any chance you're having problems preparing your develpment environment or you think this introduction needs something else or you just wanna chat, go talk to him ->[👨🏻‍💻](https://github.com/aacos13)
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

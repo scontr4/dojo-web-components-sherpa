@@ -1,113 +1,39 @@
 {
-  "name": "bbog-dig-dt-angular-template-web-ui",
-  "version": "1.0.2",
-  "description": "Template example for generating frontend repos for bdb. Courtesy of @mnieto2 and @aacos13",
-  "keywords": [
-    "github",
-    "actions",
-    "angular",
-    "husky",
-    "bbog",
-    "template"
-  ],
-  "bugs": {
-    "email": "mnieto2@bancodebogota.com.co",
-    "url": "https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui/issues"
-  },
-  "author": {
-    "email": "mnieto2@bancodebogota.com.co",
-    "name": "Mateo Nieto",
-    "url": "https://github.com/mnieto2"
-  },
-  "author2": {
-    "email": "aacos13@bancodebogota.com.co",
-    "name": "Andres Mauricio Acosta Pulido",
-    "url": "https://github.com/aacos13"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bancodebogota/bbog-dig-dt-angular-template-web-ui.git"
-  },
-  "license": "MIT",
+  "name": "sherpa-day",
+  "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "dev": "ng serve --port $PORT",
+    "start": "rm -rf .angular && ng serve",
     "build": "ng build",
-    "build:qa": "ng build --configuration=qa --aot",
-    "build:st": "ng build --configuration=staging --aot",
-    "build:prod": "ng build --configuration=production",
-    "test": "npm run lint && jest",
-    "coverage": "jest --coverage",
-    "test:coverage": "npm run test && npm run coverage",
-    "lint": "ng lint",
-    "lint:fix": "ng lint --fix=true",
-    "sonar": "gulp sonar",
-    "shscan": "npx bbog-dig-dt-sherpa-scanner-lib -c sherpa-scanner.config.js",
-    "test:config": "npm run test && npm run coverage"
-  },
-  "husky": {
-    "//1": "Use git commit --no-verify to bypass the pre-commit hook",
-    "//2": "Use git push --no-verify to bypass the pre-push hook",
-    "hooks": {
-      "pre-commit": "npm run lint",
-      "pre-push": "npm run test"
-    }
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^16.1.7",
-    "@angular/common": "~16.1.7",
-    "@angular/compiler": "~16.1.7",
-    "@angular/core": "~16.1.7",
-    "@angular/elements": "^16.1.7",
-    "@angular/forms": "~16.1.7",
-    "@angular/platform-browser": "~16.1.7",
-    "@angular/platform-browser-dynamic": "~16.1.7",
-    "@angular/router": "~16.1.7",
-    "@npm-bbta/bbog-dig-dt-sherpa-scanner-lib": "^1.1.1",
-    "@npm-bbta/bbog-dig-dt-webcomponents-lib": "^5.0.8",
-    "babel-loader": "^9.1.3",
-    "document-register-element": "^1.14.10",
-    "node-forge": "^1.3.1",
-    "rxjs": "~7.8.1",
-    "terser": "^5.19.2",
-    "tslib": "^2.6.1",
-    "zone.js": "~0.13.1"
+    "@angular/animations": "^18.2.0",
+    "@angular/common": "^18.2.0",
+    "@angular/compiler": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@angular/forms": "^18.2.0",
+    "@angular/platform-browser": "^18.2.0",
+    "@angular/platform-browser-dynamic": "^18.2.0",
+    "@angular/router": "^18.2.0",
+    "@npm-bbta/bbog-dig-dt-sherpa-lib": "6.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.10"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^16.1.6",
-    "@angular-eslint/builder": "16.1.0",
-    "@angular-eslint/eslint-plugin": "16.1.0",
-    "@angular-eslint/eslint-plugin-template": "16.1.0",
-    "@angular-eslint/schematics": "16.1.0",
-    "@angular-eslint/template-parser": "16.1.0",
-    "@angular/cli": "^16.1.6",
-    "@angular/compiler-cli": "~16.1.7",
-    "@types/jest": "^29.5.3",
-    "@types/node": "^20.4.5",
-    "@typescript-eslint/eslint-plugin": "6.2.0",
-    "@typescript-eslint/parser": "6.2.0",
-    "eslint": "^8.46.0",
-    "husky": "^8.0.3",
-    "jest": "^29.6.2",
-    "jest-preset-angular": "^13.1.1",
-    "typescript": "~5.1.6"
-  },
-  "jest": {
-    "preset": "jest-preset-angular",
-    "setupFilesAfterEnv": [
-      "<rootDir>/jestSetup.ts"
-    ],
-    "testPathIgnorePatterns": [
-      "<rootDir>/node_modules/",
-      "<rootDir>/dist/"
-    ],
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "<rootDir>/tsconfig.spec.json",
-        "stringifyContentPathRegex": "\\.html$"
-      }
-    }
+    "@angular-devkit/build-angular": "^18.2.4",
+    "@angular/cli": "^18.2.4",
+    "@angular/compiler-cli": "^18.2.0",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.2.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.5.2"
   }
 }
